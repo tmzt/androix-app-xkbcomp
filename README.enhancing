@@ -24,7 +24,7 @@ A useful source is also Ivan  Pascal's text about xkb configuration
 ment.
 
 Note that this document covers only enhancements which are to be made to
-XFree86 version 4.3.x and above.
+XFree86 version 4.3 and X11R6.7.0 and above.
 
 2.  The Basics
 
@@ -104,10 +104,10 @@ tricks.
 
 3.1  Levels And Groups
 
-Since XFree86 4.3.0 you can use multi-layout concept of xkb configuration.
-Though it is still in boundaries of xkb protocol and general ideas, the
-keymap designer must obey new rules when creating new maps. In exchange we
-get a more powerful and cleaner configuration system.
+Since XFree86 4.3.0 and X11R6.7.0 you can use multi-layout concept of xkb
+configuration.  Though it is still in boundaries of xkb protocol and general
+ideas, the keymap designer must obey new rules when creating new maps. In
+exchange we get a more powerful and cleaner configuration system.
 
 Remember that it is the application which must decide which symbol matches
 which keycode according to effective modifier state. The X server itself
@@ -423,7 +423,7 @@ this:
      ! model                   =   keycodes
        macintosh_old                     =   macintosh
        ...
-       *                       =   xfree86
+       *                       =   xorg
 
      ! model                        =   symbols
        hp                      =   +inet(%m)
@@ -446,10 +446,10 @@ Each rule defines what certain combination of values on the left side of
 equal sign ('=') results in. For example a (keyboard) model macintosh_old
 instructs xkb to take definitions of keycodes from file keycodes/macintosh
 while the rest of models (represented by a wild card '*') instructs it to
-take them from file keycodes/xfree86. The wild card represents all possible
-values on the left side which were not found in any of the previous rules.
-The more specialized (more complete) rules have higher precedence than gen-
-eral ones, i.e. the more general rules supply reasonable default values.
+take them from file keycodes/xorg. The wild card represents all possible val-
+ues on the left side which were not found in any of the previous rules.  The
+more specialized (more complete) rules have higher precedence than general
+ones, i.e. the more general rules supply reasonable default values.
 
 As you can see some lines contain substitution parameters - the parameters
 preceded by the percent sign ('%'). The first alphabetical character after
@@ -505,7 +505,6 @@ rules file described above the .lst file could look like:
 
 And that should be it. Enjoy creating your own xkb mapping.
 
-     Generated from XFree86: xc/programs/Xserver/hw/xfree86/doc/sgml/XKB-Enhancing.sgml,v 1.2 dawes Exp $
+     Generated from Id: XKB-Enhancing.sgml,v 1.1.10.2 eich Exp $
 
 
-$XFree86: xc/programs/xkbcomp/README.enhancing,v 1.5 2003/10/19 19:57:44 dawes Exp $
