@@ -24,6 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
+/* $XFree86: xc/programs/xkbcomp/expr.c,v 3.6 2002/06/05 00:00:37 dawes Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"
@@ -34,12 +35,7 @@
 /***====================================================================***/
 
 char *
-#if NeedFunctionPrototypes
 exprOpText(unsigned type)
-#else
-exprOpText(type)
-    unsigned type;
-#endif
 {
 static char buf[32];
 
@@ -100,12 +96,7 @@ static char buf[32];
 }
 
 char *
-#if NeedFunctionPrototypes
 exprTypeText(unsigned type)
-#else
-exprTypeText(type)
-    unsigned type;
-#endif
 {
 static char buf[20];
 
@@ -136,18 +127,10 @@ static char buf[20];
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveLhs(	ExprDef *	expr,
 		ExprResult *	elem_rtrn,
 		ExprResult *	field_rtrn,
 		ExprDef **	index_rtrn)
-#else
-ExprResolveLhs(expr,elem_rtrn,field_rtrn,index_rtrn)
-    ExprDef *		expr;
-    ExprResult *	elem_rtrn;
-    ExprResult *	field_rtrn;
-    ExprDef **		index_rtrn;
-#endif
 {
     switch (expr->op) {
 	case ExprIdent:
@@ -171,20 +154,11 @@ ExprResolveLhs(expr,elem_rtrn,field_rtrn,index_rtrn)
 }
 
 Bool
-#if NeedFunctionPrototypes
 SimpleLookup(	XPointer 	priv,
 		Atom		elem,
 		Atom		field,
 		unsigned	type,
 		ExprResult *	val_rtrn)
-#else
-SimpleLookup(priv,elem,field,type,val_rtrn)
-    XPointer 		priv;
-    Atom		elem;
-    Atom		field;
-    unsigned		type;
-    ExprResult *	val_rtrn;
-#endif
 {
 LookupEntry *	entry;
 register char *	str;
@@ -207,20 +181,11 @@ register char *	str;
 }
 
 Bool
-#if NeedFunctionPrototypes
 RadioLookup(	XPointer 	priv,
 		Atom		elem,
 		Atom		field,
 		unsigned	type,
 		ExprResult *	val_rtrn)
-#else
-RadioLookup(priv,elem,field,type,val_rtrn)
-    XPointer 		priv;
-    Atom		elem;
-    Atom		field;
-    unsigned		type;
-    ExprResult *	val_rtrn;
-#endif
 {
 register char *	str;
 int		rg;
@@ -245,20 +210,11 @@ int		rg;
 }
 
 int
-#if NeedFunctionPrototypes
 TableLookup(	XPointer 	priv,
 		Atom		elem,
 		Atom		field,
 		unsigned	type,
 		ExprResult *	val_rtrn)
-#else
-TableLookup(priv,elem,field,type,val_rtrn)
-    XPointer 		priv;
-    Atom		elem;
-    Atom		field;
-    unsigned		type;
-    ExprResult *	val_rtrn;
-#endif
 {
 LookupTable *	tbl= (LookupTable *)priv;
 register char *	str;
@@ -293,39 +249,21 @@ static LookupEntry modIndexNames[] = {
 };
 
 int
-#if NeedFunctionPrototypes
 LookupModIndex(	XPointer 	priv,
 		Atom		elem,
 		Atom		field,
 		unsigned	type,
 		ExprResult *	val_rtrn)
-#else
-LookupModIndex(priv,elem,field,type,val_rtrn)
-    XPointer 		priv;
-    Atom		elem;
-    Atom		field;
-    unsigned		type;
-    ExprResult *	val_rtrn;
-#endif
 {
     return SimpleLookup((XPointer)modIndexNames,elem,field,type,val_rtrn);
 }
 
 int
-#if NeedFunctionPrototypes
 LookupModMask(	XPointer 	priv,
 		Atom		elem,
 		Atom		field,
 		unsigned	type,
     		ExprResult *	val_rtrn)
-#else
-LookupModMask(priv,elem,field,type,val_rtrn)
-    XPointer 		priv;
-    Atom		elem;
-    Atom		field;
-    unsigned		type;
-    ExprResult *	val_rtrn;
-#endif
 {
 char *str;
 
@@ -351,18 +289,10 @@ char *str;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveModIndex(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveModIndex(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int	ok= 0;
 char		*bogus= NULL;
@@ -429,18 +359,10 @@ char		*bogus= NULL;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveModMask(	ExprDef *		expr,
 			ExprResult *		val_rtrn,
 			IdentLookupFunc		lookup,
 			XPointer		lookupPriv)
-#else
-ExprResolveModMask(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 LookupPriv	priv;
 
@@ -451,18 +373,10 @@ LookupPriv	priv;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveBoolean(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveBoolean(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int	ok= 0;
 char *	bogus= NULL;
@@ -537,18 +451,10 @@ char *	bogus= NULL;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveFloat(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveFloat(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int	ok= 0;
 ExprResult	leftRtrn,rightRtrn;
@@ -649,18 +555,10 @@ ExprDef		*left,*right;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveInteger(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveInteger(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int	ok= 0;
 ExprResult	leftRtrn,rightRtrn;
@@ -761,18 +659,10 @@ ExprDef		*left,*right;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveString(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveString(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int		ok= 0;
 ExprResult	leftRtrn,rightRtrn;
@@ -858,18 +748,10 @@ char *		bogus= NULL;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveKeyName(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveKeyName(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int		ok= 0;
 ExprDef	*	left;
@@ -937,14 +819,7 @@ char *		bogus= NULL;
 /***====================================================================***/
 
 int
-#if NeedFunctionPrototypes
 ExprResolveEnum(ExprDef *expr,ExprResult *val_rtrn,LookupEntry	*values)
-#else
-ExprResolveEnum(expr,val_rtrn,values)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    LookupEntry	*	values;
-#endif
 {
     if (expr->op!=ExprIdent) {
 	ERROR1("Found a %s where an enumerated value was expected\n",
@@ -959,6 +834,8 @@ ExprResolveEnum(expr,val_rtrn,values)
 	while (values && values->name) {
 	    if (nOut!=0)	INFO1(", %s",values->name);
 	    else		INFO1("%s",values->name);
+	    values++;
+	    nOut++;
 	}
 	INFO(")\n");
 	return False;
@@ -967,18 +844,10 @@ ExprResolveEnum(expr,val_rtrn,values)
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveMask(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveMask(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int	ok= 0;
 ExprResult	leftRtrn,rightRtrn;
@@ -1075,18 +944,10 @@ char *		bogus= NULL;
 }
 
 int
-#if NeedFunctionPrototypes
 ExprResolveKeySym(	ExprDef *	expr,
 			ExprResult *	val_rtrn,
 			IdentLookupFunc	lookup,
 			XPointer	lookupPriv)
-#else
-ExprResolveKeySym(expr,val_rtrn,lookup,lookupPriv)
-    ExprDef *		expr;
-    ExprResult *	val_rtrn;
-    IdentLookupFunc	lookup;
-    XPointer		lookupPriv;
-#endif
 {
 int	ok= 0;
 KeySym	sym;

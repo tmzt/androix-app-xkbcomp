@@ -25,24 +25,17 @@
    * used in advertising or publicity pertaining to distribution of the 
    * software without specific, written prior permission.
   \*/
+/* $XFree86: xc/programs/xkbcomp/utils.c,v 3.7 2002/06/05 00:00:37 dawes Exp $ */
 
 #include 	"utils.h"
 #include	<ctype.h>
-#ifndef X_NOT_STDC_ENV
-#include <stdlib.h>
-#else
-char *malloc();
-#endif
+#include	<stdlib.h>
+#include	<stdarg.h>
 
 /***====================================================================***/
 
 Opaque
-#if NeedFunctionPrototypes
 uAlloc(unsigned size)
-#else
-uAlloc(size)
-    unsigned	size;
-#endif
 {
     return((Opaque)malloc(size));
 }
@@ -50,13 +43,7 @@ uAlloc(size)
 /***====================================================================***/
 
 Opaque
-#if NeedFunctionPrototypes
 uCalloc(unsigned n,unsigned size)
-#else
-uCalloc(n,size)
-    unsigned	n;
-    unsigned	size;
-#endif
 {
     return((Opaque)calloc(n,size));
 }
@@ -64,13 +51,7 @@ uCalloc(n,size)
 /***====================================================================***/
 
 Opaque
-#if NeedFunctionPrototypes
 uRealloc(Opaque old,unsigned newSize)
-#else
-uRealloc(old,newSize)
-    Opaque	old;
-    unsigned	newSize;
-#endif
 {
     if (old==NULL)
 	 return((Opaque)malloc(newSize));
@@ -80,15 +61,7 @@ uRealloc(old,newSize)
 /***====================================================================***/
 
 Opaque
-#if NeedFunctionPrototypes
 uRecalloc(Opaque old,unsigned nOld,unsigned nNew,unsigned itemSize)
-#else
-uRecalloc(old,nOld,nNew,itemSize)
-    Opaque	old;
-    unsigned	nOld;
-    unsigned	nNew;
-    unsigned	itemSize;
-#endif
 {
 char *rtrn;
 
@@ -106,12 +79,7 @@ char *rtrn;
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
 uFree(Opaque ptr)
-#else
-uFree(ptr)
-    Opaque ptr;
-#endif
 {
     if (ptr!=(Opaque)NULL)
 	free((char *)ptr);
@@ -122,16 +90,11 @@ uFree(ptr)
 /***                  FUNCTION ENTRY TRACKING                           ***/
 /***====================================================================***/
 
-static	FILE	*entryFile=	stderr;
+static	FILE	*entryFile=	NULL;
 	int	 uEntryLevel;
 
 Boolean
-#if NeedFunctionPrototypes
 uSetEntryFile(char *name)
-#else
-uSetEntryFile(name)
-    char *name;
-#endif
 {
     if ((entryFile!=NULL)&&(entryFile!=stderr)) {
 	fprintf(entryFile,"switching to %s\n",name?name:"stderr");
@@ -147,34 +110,22 @@ uSetEntryFile(name)
 }
 
 void
-#if NeedFunctionPrototypes
-uEntry(int l,char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,
-								Opaque a6)
-#else
-uEntry(l,s,a1,a2,a3,a4,a5,a6)
-int	l;
-char	*s;
-Opaque	a1,a2,a3,a4,a5,a6;
-#endif
+uEntry(int l,char *s,...)
 {
 int	i;
+va_list args;
 
     for (i=0;i<uEntryLevel;i++) {
 	putc(' ',entryFile);
     }
-    fprintf(entryFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(entryFile,s,args);
+    va_end(args);
     uEntryLevel+= l;
-    return;
 }
 
 void
-#if NeedFunctionPrototypes
 uExit(int l,char *rtVal)
-#else
-uExit(l,rtVal)
-    int		l;
-    char *	rtVal;
-#endif
 {
 int	i;
 
@@ -183,7 +134,7 @@ int	i;
     for (i=0;i<uEntryLevel;i++) {
 	putc(' ',entryFile);
     }
-    fprintf(entryFile,"---> 0x%x\n",rtVal);
+    fprintf(entryFile,"---> %p\n",rtVal);
     return;
 }
 
@@ -191,17 +142,12 @@ int	i;
 /***			PRINT FUNCTIONS					***/
 /***====================================================================***/
 
-	FILE	*uDebugFile=		stderr;
+	FILE	*uDebugFile=		NULL;
 	int	 uDebugIndentLevel=	0;
 	int	 uDebugIndentSize=	4;
 
 Boolean
-#if NeedFunctionPrototypes
 uSetDebugFile(char *name)
-#else
-uSetDebugFile(name)
-    char *name;
-#endif
 {
     if ((uDebugFile!=NULL)&&(uDebugFile!=stderr)) {
 	fprintf(uDebugFile,"switching to %s\n",name?name:"stderr");
@@ -217,53 +163,41 @@ uSetDebugFile(name)
 }
 
 void
-#if NeedFunctionPrototypes
-uDebug(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,Opaque a6)
-#else
-uDebug(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uDebug(char *s,...)
 {
 int	i;
+va_list	args;
 
     for (i=(uDebugIndentLevel*uDebugIndentSize);i>0;i--) {
 	putc(' ',uDebugFile);
     }
-    fprintf(uDebugFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(uDebugFile,s,args);
+    va_end(args);
     fflush(uDebugFile);
-    return;
 }
 
 void
-#if NeedFunctionPrototypes
-uDebugNOI(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,Opaque a6)
-#else
-uDebugNOI(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uDebugNOI(char *s,...)
 {
-    fprintf(uDebugFile,s,a1,a2,a3,a4,a5,a6);
+va_list args;
+
+    va_start(args, s);
+    vfprintf(uDebugFile,s,args);
+    va_end(args);
     fflush(uDebugFile);
-    return;
 }
 
 /***====================================================================***/
 
-static	FILE	*errorFile=	stderr;
+static	FILE	*errorFile=	NULL;
 static	int	 outCount=	0;
 static	char	*preMsg=	NULL;
 static	char	*postMsg=	NULL;
 static	char	*prefix=	NULL;
 
 Boolean
-#if NeedFunctionPrototypes
 uSetErrorFile(char *name)
-#else
-uSetErrorFile(name)
-    char *name;
-#endif
 {
     if ((errorFile!=NULL)&&(errorFile!=stderr)) {
 	fprintf(errorFile,"switching to %s\n",name?name:"stderr");
@@ -279,100 +213,85 @@ uSetErrorFile(name)
 }
 
 void
-#if NeedFunctionPrototypes
-uInformation(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,
-								Opaque a6)
-#else
-uInformation(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uInformation(char *s, ...)
 {
-    fprintf(errorFile,s,a1,a2,a3,a4,a5,a6);
+va_list args;
+
+    va_start(args, s);
+    vfprintf(errorFile,s,args);
+    va_end(args);
     fflush(errorFile);
-    return;
 }
 
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
-uAction(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,Opaque a6)
-#else
-uAction(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uAction(char *s, ...)
 {
+va_list args;
+
     if (prefix!=NULL)
 	fprintf(errorFile,"%s",prefix);
     fprintf(errorFile,"                  ");
-    fprintf(errorFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(errorFile,s,args);
+    va_end(args);
     fflush(errorFile);
-    return;
 }
 
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
-uWarning(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,Opaque a6)
-#else
-uWarning(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uWarning(char *s, ...)
 {
+va_list args;
+
     if ((outCount==0)&&(preMsg!=NULL))
 	fprintf(errorFile,"%s\n",preMsg);
     if (prefix!=NULL)
 	fprintf(errorFile,"%s",prefix);
     fprintf(errorFile,"Warning:          ");
-    fprintf(errorFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(errorFile,s,args);
+    va_end(args);
     fflush(errorFile);
     outCount++;
-    return;
 }
 
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
-uError(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,Opaque a6)
-#else
-uError(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uError(char *s, ...)
 {
+va_list args;
+
     if ((outCount==0)&&(preMsg!=NULL))
 	fprintf(errorFile,"%s\n",preMsg);
     if (prefix!=NULL)
 	fprintf(errorFile,"%s",prefix);
     fprintf(errorFile,"Error:            ");
-    fprintf(errorFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(errorFile,s,args);
+    va_end(args);
     fflush(errorFile);
     outCount++;
-    return;
 }
 
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
-uFatalError(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,Opaque a6)
-#else
-uFatalError(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uFatalError(char *s, ...)
 {
+va_list args;
+
     if ((outCount==0)&&(preMsg!=NULL))
 	fprintf(errorFile,"%s\n",preMsg);
     if (prefix!=NULL)
 	fprintf(errorFile,"%s",prefix);
     fprintf(errorFile,"Fatal Error:      ");
-    fprintf(errorFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(errorFile,s,args);
+    va_end(args);
     fprintf(errorFile,"                  Exiting\n");
     fflush(errorFile);
     outCount++;
@@ -383,33 +302,24 @@ Opaque a1,a2,a3,a4,a5,a6;
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
-uInternalError(char *s,Opaque a1,Opaque a2,Opaque a3,Opaque a4,Opaque a5,
-								Opaque a6)
-#else
-uInternalError(s,a1,a2,a3,a4,a5,a6)
-char *s;
-Opaque a1,a2,a3,a4,a5,a6;
-#endif
+uInternalError(char *s, ...)
 {
+va_list args;
+
     if ((outCount==0)&&(preMsg!=NULL))
 	fprintf(errorFile,"%s\n",preMsg);
     if (prefix!=NULL)
 	fprintf(errorFile,"%s",prefix);
     fprintf(errorFile,"Internal error:   ");
-    fprintf(errorFile,s,a1,a2,a3,a4,a5,a6);
+    va_start(args, s);
+    vfprintf(errorFile,s,args);
+    va_end(args);
     fflush(errorFile);
     outCount++;
-    return;
 }
 
 void
-#if NeedFunctionPrototypes
 uSetPreErrorMessage(char *msg)
-#else
-uSetPreErrorMessage(msg)
-    char *msg;
-#endif
 {
     outCount= 0;
     preMsg= msg;
@@ -417,35 +327,21 @@ uSetPreErrorMessage(msg)
 }
 
 void
-#if NeedFunctionPrototypes
 uSetPostErrorMessage(char *msg)
-#else
-uSetPostErrorMessage(msg)
-    char *msg;
-#endif
 {
     postMsg= msg;
     return;
 }
 
 void
-#if NeedFunctionPrototypes
 uSetErrorPrefix(char *pre)
-#else
-uSetErrorPrefix(pre)
-    char *pre;
-#endif
 {
     prefix= pre;
     return;
 }
 
 void
-#if NeedFunctionPrototypes
 uFinishUp(void)
-#else
-uFinishUp()
-#endif
 {
     if ((outCount>0)&&(postMsg!=NULL))
 	fprintf(errorFile,"%s\n",postMsg);
@@ -456,12 +352,7 @@ uFinishUp()
 
 #ifndef HAVE_STRDUP
 char *
-#if NeedFunctionPrototypes
 uStringDup(char *str)
-#else
-uStringDup(str)
-    char *str;
-#endif
 {
 char *rtrn;
 
@@ -475,12 +366,7 @@ char *rtrn;
 
 #ifndef HAVE_STRCASECMP
 int
-#if NeedFunctionPrototypes
 uStrCaseCmp(char *str1,char *str2)
-#else
-uStrCaseCmp(str1, str2)
-    char *str1, *str2;
-#endif
 {
     char buf1[512],buf2[512];
     char c, *s;
@@ -506,21 +392,16 @@ uStrCaseCmp(str1, str2)
 }
 
 int
-#if NeedFunctionPrototypes
-uStrCasePrefix(char *prefix,char *str)
-#else
-uStrCasePrefix(prefix, str)
-    char *prefix, *str;
-#endif
+uStrCasePrefix(char *my_prefix,char *str)
 {
     char c1;
     char c2;
-    while (((c1=*prefix)!='\0')&&((c2=*str)!='\0')) {
+    while (((c1=*my_prefix)!='\0')&&((c2=*str)!='\0')) {
 	if (isupper(c1))	c1= tolower(c1);
 	if (isupper(c2))	c2= tolower(c2);
 	if (c1!=c2)
 	    return 0;
-	prefix++; str++;
+	my_prefix++; str++;
     }
     if (c1!='\0')
 	return 0;

@@ -24,6 +24,8 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
+/* $XFree86: xc/programs/xkbcomp/xkbparse.y,v 3.12 2002/10/16 21:33:04 tsi Exp $ */
+
 %token
 	END_OF_FILE	0
 	ERROR_TOK	255
@@ -96,14 +98,9 @@
 #include "parseutils.h"
 #include <X11/keysym.h>
 #include <X11/extensions/XKBgeom.h>
+#include <stdlib.h>
 
-_XFUNCPROTOBEGIN
-extern	int yylex(
-#if NeedFunctionPrototypes
-	void
-#endif
-);
-_XFUNCPROTOEND
+
 %}
 %right	EQUALS
 %left	PLUS MINUS
@@ -405,6 +402,7 @@ SymbolsBody	:	SymbolsBody COMMA SymbolsVarDecl
 			{ $$= (VarDef *)AppendStmt(&$1->common,&$3->common); }
 		|	SymbolsVarDecl
 			{ $$= $1; }
+		|	{ $$= NULL; }
 		;
 
 SymbolsVarDecl	:	Lhs EQUALS Expr
@@ -445,7 +443,6 @@ IndicatorNameDecl:	INDICATOR Integer EQUALS Expr SEMI
 
 ShapeDecl	:	SHAPE String OBRACE OutlineList CBRACE SEMI
 			{ $$= ShapeDeclCreate($2,(OutlineDef *)&$4->common); }
-		;
 		|	SHAPE String OBRACE CoordList CBRACE SEMI
 			{ 
 			    OutlineDef *outlines;
@@ -508,7 +505,7 @@ OverlayKeyList	:	OverlayKeyList COMMA OverlayKey
 			{ 
 			    $$= (OverlayKeyDef *)
 				AppendStmt(&$1->common,&$3->common);
-			};
+			}
 		|	OverlayKey
 			{ $$= $1; }
 		;
@@ -777,12 +774,7 @@ MapName		:	STRING 	{ $$= scanStr; scanStr= NULL; }
 		;
 %%
 void
-#if NeedFunctionPrototypes
 yyerror(char *s)
-#else
-yyerror(s)
-char	*s;
-#endif
 {
     if (warningLevel>0) {
 	(void)fprintf(stderr,"%s: line %d of %s\n",s,lineNum,
@@ -795,11 +787,7 @@ char	*s;
 
 
 int
-#if NeedFunctionPrototypes
 yywrap(void)
-#else
-yywrap()
-#endif
 {
    return 1;
 }

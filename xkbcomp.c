@@ -24,10 +24,17 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
+/* $XFree86: xc/programs/xkbcomp/xkbcomp.c,v 3.18 2002/11/15 03:14:12 dawes Exp $ */
 
 #include <stdio.h>
 #include <ctype.h>
 #include <X11/keysym.h>
+
+/* for symlink attack security fix -- Branden Robinson */
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+/* end BR */
 
 #if defined(sgi)
 #include <malloc.h>
@@ -36,14 +43,16 @@
 #define	DEBUG_VAR_NOT_LOCAL
 #define	DEBUG_VAR debugFlags
 #include "xkbcomp.h"
-#ifndef X_NOT_STDC_ENV
 #include <stdlib.h>
-#endif
 #include "xkbpath.h"
 #include "parseutils.h"
 #include "misc.h"
 #include "tokens.h"
 #include <X11/extensions/XKBgeom.h>
+
+#ifdef __UNIXOS2__
+#define chdir _chdir2
+#endif
 
 #define	lowbit(x)	((x) & (-(x)))
 
@@ -96,13 +105,7 @@ static	char *		errorPrefix= NULL;
 #define	M1(m,a)	fprintf(stderr,(m),(a))
 
 static void
-#if NeedFunctionPrototypes
 Usage(int argc,char *argv[])
-#else
-Usage(argc,argv)
-    int 	argc;
-    char *	argv[];
-#endif
 {
     if (!xkblist)
 	 M1("Usage: %s [options] input-file [ output-file ]\n",argv[0]);
@@ -165,12 +168,7 @@ Usage(argc,argv)
 /***====================================================================***/
 
 static void
-#if NeedFunctionPrototypes
 setVerboseFlags(char *str)
-#else
-setVerboseFlags(str)
-    char *	str;
-#endif
 {
     for (;*str;str++) {
 	switch (*str) {
@@ -191,13 +189,7 @@ setVerboseFlags(str)
 }
 
 static Bool
-#if NeedFunctionPrototypes
 parseArgs(int argc,char *argv[])
-#else
-parseArgs(argc,argv)
-    int		argc;
-    char *	argv[];
-#endif
 {
 register int i,tmp;
 
@@ -300,7 +292,7 @@ register int i,tmp;
 	else if ((strncmp(argv[i],"-I",2)==0)&&(!xkblist)) {
 	    if (!XkbAddDirectoryToPath(&argv[i][2])) {
 		ACTION("Exiting\n");
- 		exit(1);
+		exit(1);
 	    }
 	}
 	else if ((strncmp(argv[i],"-l",2)==0)&&(!xkblist)) {
@@ -368,9 +360,9 @@ register int i,tmp;
 		}
 	    }
 	    else {
-		char *tmp;
-		for (tmp=argv[i];(*tmp!='\0');tmp++) {
-		    switch (*tmp) {
+		char *tmp2;
+		for (tmp2=argv[i];(*tmp2!='\0');tmp2++) {
+		    switch (*tmp2) {
 			case 'c': case 'C':
 			    optionalParts|= XkmCompatMapMask;
 			    break;
@@ -391,7 +383,7 @@ register int i,tmp;
 				WARN1("Illegal component for %s option\n",
 								argv[i-1]);
 				ACTION1("Ignoring unknown specifier \"%c\"\n",
-								(unsigned int)*tmp);
+								(unsigned int)*tmp2);
 			    }
 			    break;
 		    }
@@ -625,13 +617,7 @@ register int i,tmp;
 }
 
 static Display *
-#if NeedFunctionPrototypes
 GetDisplay(char *program,char *dpyName)
-#else
-GetDisplay(program,dpyName)
-    char *	program;
-    char *	dpyName;
-#endif
 {
 int	mjr,mnr,error;
 Display	*dpy;
@@ -673,13 +659,7 @@ Display	*dpy;
 extern int yydebug;
 
 int
-#if NeedFunctionPrototypes
 main(int argc,char *argv[])
-#else
-main(argc,argv)
-    int		argc;
-    char *	argv[];
-#endif
 {
 FILE 	*	file;
 XkbFile	*	rtrn;
@@ -688,6 +668,12 @@ int		ok;
 XkbFileInfo 	result;
 Status		status;
 
+    yyin = stdin;
+    uSetEntryFile(NullString);
+    uSetDebugFile(NullString);
+    uSetErrorFile(NullString);
+
+    XkbInitIncludePath();
     if (!parseArgs(argc,argv))
 	exit(1);
 #ifdef DEBUG
@@ -702,7 +688,7 @@ Status		status;
 	uSetPostErrorMessage(postErrorMsg);
     file= NULL;
     XkbInitAtoms(NULL);
-    XkbInitIncludePath();
+    XkbAddDefaultDirectoriesToPath();
     if (xkblist) {
 	Bool	gotSome;
 	gotSome= GenerateListing(outputFile);
@@ -868,7 +854,7 @@ Status		status;
 	ok= 0;
     }
     if (ok) {
-	FILE *out= stdout;
+	FILE *out = stdout;
 	if ((inDpy!=outDpy)&&
 	    (XkbChangeKbdDisplay(outDpy,&result)!=Success)) {
 	    WSGO2("Error converting keyboard display from %s to %s\n",
@@ -879,12 +865,31 @@ Status		status;
 	    if (uStringEqual(outputFile,"-"))
 		outputFile= "stdout";
 	    else {
-		out= fopen(outputFile,"w");
+		/*
+		 * fix to prevent symlink attack (e.g.,
+		 * ln -s /etc/passwd /var/tmp/server-0.xkm)
+		 */
+		/*
+		 * this patch may have POSIX, Linux, or GNU libc bias
+		 * -- Branden Robinson
+		 */
+		int outputFileFd;
+		unlink(outputFile);
+		outputFileFd= open(outputFile, O_WRONLY|O_CREAT|O_EXCL,
+			    S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH);
+		if (outputFileFd<0) {
+		    ERROR1("Cannot open \"%s\" to write keyboard description\n",
+								outputFile);
+		    ACTION("Exiting\n");
+		    exit(1);
+		}
+		out= fdopen(outputFileFd, "w");
+		/* end BR */
 		if (out==NULL) {
 		    ERROR1("Cannot open \"%s\" to write keyboard description\n",
 								outputFile);
-		     ACTION("Exiting\n");
-		     exit(1);
+		    ACTION("Exiting\n");
+		    exit(1);
 		}
 	    }
 	}

@@ -24,6 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
+/* $XFree86: xc/programs/xkbcomp/indicators.c,v 1.5 2002/06/05 00:00:37 dawes Exp $ */
 
 #include "xkbcomp.h"
 #include "misc.h"
@@ -31,6 +32,8 @@
 #include "expr.h"
 #include "vmod.h"
 #include "indicators.h"
+#include "action.h"
+#include "compat.h"
 
 /***====================================================================***/
 
@@ -44,13 +47,7 @@
 /***====================================================================***/
 
 void
-#if NeedFunctionPrototypes
 ClearIndicatorMapInfo(Display *dpy,LEDInfo *info)
-#else
-ClearIndicatorMapInfo(dpy,info)
-    Display *		dpy;
-    LEDInfo *	info;
-#endif
 {
     info->name= 	XkbInternAtom(dpy,"default",False);
     info->indicator=	_LED_NotBound;
@@ -62,13 +59,7 @@ ClearIndicatorMapInfo(dpy,info)
 }
 
 LEDInfo *
-#if NeedFunctionPrototypes
 AddIndicatorMap(LEDInfo *oldLEDs,LEDInfo *new)
-#else
-AddIndicatorMap(oldLEDs,new)
-    LEDInfo *	oldLEDs;
-    LEDInfo *	new;
-#endif
 {
 LEDInfo *old,*last;
 unsigned collide;
@@ -171,6 +162,7 @@ LookupEntry	modComponentNames[] = {
 	{	NULL,		0			}
 };
 LookupEntry	groupComponentNames[] = {
+	{	"base",		XkbIM_UseBase		},
 	{	"latched",	XkbIM_UseLatched	},
 	{	"locked",	XkbIM_UseLocked		},
 	{	"effective",	XkbIM_UseEffective	},
@@ -180,20 +172,11 @@ LookupEntry	groupComponentNames[] = {
 };
 
 int
-#if NeedFunctionPrototypes
 SetIndicatorMapField(	LEDInfo *	led,
 			XkbDescPtr 	xkb,
 			char *		field,
 			ExprDef *	arrayNdx,
 			ExprDef *	value)
-#else
-SetIndicatorMapField(led,xkb,field,arrayNdx,value)
-    LEDInfo *	led;
-    XkbDescPtr	xkb;
-    char *	field;
-    ExprDef *	arrayNdx;
-    ExprDef *	value;
-#endif
 {
 ExprResult	rtrn;
 Bool		ok;
@@ -209,7 +192,6 @@ Bool		ok;
 	led->defs.defined|= _LED_Mods;
     }
     else if (uStrCaseCmp(field,"groups")==0) {
-	extern LookupEntry	groupNames[];
 	if (arrayNdx!=NULL)
 	    return ReportIndicatorNotArray(xkb->dpy,led,field);
 	if (!ExprResolveMask(value,&rtrn,SimpleLookup,(XPointer)groupNames))
@@ -219,7 +201,6 @@ Bool		ok;
     }
     else if ((uStrCaseCmp(field,"controls")==0)||
 	     (uStrCaseCmp(field,"ctrls")==0)) {
-	extern LookupEntry ctrlNames[];
 	if (arrayNdx!=NULL)
 	    return ReportIndicatorNotArray(xkb->dpy,led,field);
 	if (!ExprResolveMask(value,&rtrn,SimpleLookup,(XPointer)ctrlNames))
@@ -254,13 +235,6 @@ Bool		ok;
 						(XPointer)groupComponentNames)){
 	    return ReportIndicatorBadType(xkb->dpy,led,field,
 					"mask of group state components");
-	}
-	if ((rtrn.uval&XkbIM_UseCompat)&&(warningLevel>0)) {
-	    WARN("Cannot use the compatibilty state for groups\n");
-	    ACTION2("Not set in the %s field of the map for indicator %s\n",
-				field,
-				XkbAtomText(NULL,led->name,XkbMessage));
-	    rtrn.uval&= ~XkbIM_UseCompat;
 	}
 	led->which_groups= rtrn.uval;
     } 
@@ -303,20 +277,11 @@ Bool		ok;
 }
 
 LEDInfo *
-#if NeedFunctionPrototypes
 HandleIndicatorMapDef(	IndicatorMapDef *	def,
 			XkbDescPtr		xkb,
 			LEDInfo *		dflt,
 			LEDInfo *		oldLEDs,
 			unsigned 		merge)
-#else
-HandleIndicatorMapDef(def,xkb,dflt,oldLEDs,merge)
-    IndicatorMapDef *	def;
-    XkbDescPtr		xkb;
-    LEDInfo *		dflt;
-    LEDInfo *		oldLEDs;
-    unsigned 		merge;
-#endif
 {
 LEDInfo			led,*rtrn;
 VarDef *		var;
@@ -355,14 +320,7 @@ Bool			ok;
 }
 
 Bool 
-#if NeedFunctionPrototypes
 CopyIndicatorMapDefs(XkbFileInfo *result,LEDInfo *leds,LEDInfo **unboundRtrn)
-#else
-CopyIndicatorMapDefs(result,leds,unboundRtrn)
-    XkbFileInfo *	result;
-    LEDInfo *		leds;
-    LEDInfo **		unboundRtrn;
-#endif
 {
 LEDInfo *		led,*next;
 LEDInfo *		unbound,*last;
@@ -420,18 +378,10 @@ XkbDescPtr		xkb;
 }
 
 Bool
-#if NeedFunctionPrototypes
 BindIndicators(	XkbFileInfo *	result,
 		Bool		force,
 		LEDInfo *	unbound,
 		LEDInfo **	unboundRtrn)
-#else
-BindIndicators(result,force,unbound,unboundRtrn)
-    XkbFileInfo *	result;
-    Bool		force;
-    LEDInfo *		unbound;
-    LEDInfo **		unboundRtrn;
-#endif
 {
 XkbDescPtr		xkb;
 register int 		i;
