@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/expr.c,v 3.6 2002/06/05 00:00:37 dawes Exp $ */
+/* $XFree86: xc/programs/xkbcomp/expr.c,v 3.7 2003/08/06 14:04:05 eich Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"
@@ -569,9 +569,16 @@ ExprDef		*left,*right;
 	    if (expr->type==TypeString) {
 		register char *str;
 		str= XkbAtomGetString(NULL,expr->value.str);
-		if ((str!=None)&&(strlen(str)==1)) {
-		    val_rtrn->uval= str[0];
-		    return True;
+		if (str!=None)
+		    switch (strlen(str)) {
+			case 0:
+			    val_rtrn->uval= 0;
+			    return True;
+			case 1:
+			    val_rtrn->uval= str[0];
+			    return True;
+			default:
+			    break;
 		}
 	    }
 	    if ((expr->type!=TypeInt)&&(expr->type!=TypeFloat)) {

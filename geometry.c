@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/geometry.c,v 1.4 2002/06/05 00:00:37 dawes Exp $ */
+/* $XFree86: xc/programs/xkbcomp/geometry.c,v 1.5 2003/08/06 14:04:05 eich Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"
@@ -280,11 +280,11 @@ PropertyInfo *	next;
 	info->nProps= 0;
     }
     for (tmp=pi;tmp!=NULL;tmp=next) {
-	if (pi->name)
-	    uFree(pi->name);
-	if (pi->value)
-	    uFree(pi->value);
-	pi->name= pi->value=NULL;
+	if (tmp->name)
+	    uFree(tmp->name);
+	if (tmp->value)
+	    uFree(tmp->value);
+	tmp->name= tmp->value=NULL;
 	next= (PropertyInfo *)tmp->defs.next;
 	uFree(tmp);
     }
