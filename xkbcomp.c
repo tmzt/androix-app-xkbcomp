@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86$ */
+/* $XFree86: xc/programs/xkbcomp/xkbcomp.c,v 3.21 2003/10/08 11:13:03 eich Exp $ */
 
 #include <stdio.h>
 #include <ctype.h>

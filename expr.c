@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86$ */
+/* $XFree86: xc/programs/xkbcomp/expr.c,v 3.8 2003/12/18 14:14:37 pascal Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"

@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86$ */
+/* $XFree86: xc/programs/xkbcomp/keymap.c,v 1.3 2002/07/01 02:26:01 tsi Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"

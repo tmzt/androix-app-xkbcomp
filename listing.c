@@ -70,7 +70,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 
 ******************************************************************/
-/* $XFree86$ */
+/* $XFree86: xc/programs/xkbcomp/listing.c,v 3.10 2002/06/05 00:00:37 dawes Exp $ */
 
 
 #include <stdio.h>

@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86$ */
+/* $XFree86: xc/programs/xkbcomp/symbols.c,v 3.16 2003/10/31 14:32:04 pascal Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"
