@@ -3,7 +3,7 @@
 .\"
 .\"
 .\"
-.\" $XFree86: xc/programs/xkbcomp/xkbcomp.man,v 1.12 2004/01/12 21:43:20 herrb Exp $
+.\" $XFree86$
 .\"
 .TH XKBCOMP 1 __xorgversion__
 .SH NAME

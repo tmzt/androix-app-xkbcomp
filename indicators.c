@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/indicators.c,v 1.5 2002/06/05 00:00:37 dawes Exp $ */
+/* $XFree86$ */
 
 #include "xkbcomp.h"
 #include "misc.h"

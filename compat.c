@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/compat.c,v 3.4 2002/06/05 00:00:37 dawes Exp $ */
+/* $XFree86$ */
 
 #include <X11/Xos.h>
 #include "xkbcomp.h"
