@@ -24,7 +24,7 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/geometry.c,v 1.5 2003/08/06 14:04:05 eich Exp $ */
+/* $XFree86: xc/programs/xkbcomp/geometry.c,v 1.6 2003/12/22 17:48:13 tsi Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"
@@ -438,8 +438,10 @@ DoodadInfo *	dflt;
     di->section= si;
     if (si!=NULL) {
 	di->priority= si->nextDoodadPriority++;
+#if XkbGeomMaxPriority < 255
 	if (si->nextDoodadPriority>XkbGeomMaxPriority)
 	    si->nextDoodadPriority= XkbGeomMaxPriority;
+#endif
     }
     else {
 	di->priority= info->nextPriority++;
