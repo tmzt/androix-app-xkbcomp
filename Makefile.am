@@ -61,3 +61,6 @@ xkbcomp_SOURCES =	\
 dist_man_MANS = \
         xkbcomp.man
 
+EXTRA_DIST = \
+	README.config \
+	README.enhancing
