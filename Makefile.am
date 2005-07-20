@@ -21,8 +21,8 @@
 
 bin_PROGRAMS = xkbcomp
 
-AM_CFLAGS = $(DEP_CFLAGS)
-xkbcomp_LDADD = $(DEP_LIBS)
+AM_CFLAGS = $(XKBCOMP_CFLAGS)
+xkbcomp_LDADD = $(XKBCOMP_LIBS)
 
 xkbcomp_SOURCES =	\
         action.c \
