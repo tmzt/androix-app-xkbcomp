@@ -24,7 +24,7 @@ bin_PROGRAMS = xkbcomp
 AM_CFLAGS = $(XKBCOMP_CFLAGS)
 xkbcomp_LDADD = $(XKBCOMP_LIBS)
 
-xkbcomp_SOURCES =	\
+xkbcomp_SOURCES = \
         action.c \
         action.h \
         alias.c \
@@ -53,12 +53,12 @@ xkbcomp_SOURCES =	\
         vmod.h \
         xkbcomp.c \
         xkbcomp.h \
-        xkbparse.c \
+        xkbparse.y \
         xkbpath.c \
         xkbpath.h \
         xkbscan.c
 
-dist_man_MANS = \
+dist_man1_MANS = \
         xkbcomp.man
 
 EXTRA_DIST = \
