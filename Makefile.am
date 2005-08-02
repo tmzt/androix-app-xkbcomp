@@ -61,6 +61,11 @@ xkbcomp_SOURCES = \
 dist_man1_MANS = \
         xkbcomp.man
 
+BUILT_SOURCES = xkbparse.c xkbparse.h 
+CLEANFILES = $(BUILT_SOURCES)
+
+xkbparse.h: xkbparse.c
+
 EXTRA_DIST = \
 	README.config \
 	README.enhancing
