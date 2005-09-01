@@ -21,7 +21,7 @@
 
 bin_PROGRAMS = xkbcomp
 
-AM_CFLAGS = $(XKBCOMP_CFLAGS)
+AM_CFLAGS = $(XKBCOMP_CFLAGS) -DDFLT_XKB_CONFIG_ROOT='"$(datadir)/X11/xkb"'
 xkbcomp_LDADD = $(XKBCOMP_LIBS)
 
 xkbcomp_SOURCES = \

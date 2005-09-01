@@ -1,3 +1,8 @@
+2005-09-01  Kristian Høgsberg  <krh@redhat.com>
+
+	* Makefile.am (AM_CFLAGS): Define DFLT_XKB_CONFIG_ROOT to
+	$(datadir)/X11/xkb so we look in the right place.
+
 2005-08-02  Keith Packard  <keithp@keithp.com>
 
 	* Makefile.am:
