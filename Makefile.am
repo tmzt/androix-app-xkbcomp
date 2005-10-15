@@ -61,10 +61,8 @@ xkbcomp_SOURCES = \
 appman_SOURCES = \
         xkbcomp.man
 
-BUILT_SOURCES = xkbparse.c xkbparse.h 
-CLEANFILES = $(BUILT_SOURCES)
-
-xkbparse.h: xkbparse.c
+BUILT_SOURCES = xkbparse.c
+MAINTAINERCLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 	README.config \
@@ -75,7 +73,7 @@ appmandir =  $(mandir)/man$(APP_MAN_SUFFIX)
 appman_DATA = $(appman_SOURCES:man=$(APP_MAN_SUFFIX))
 
 EXTRA_DIST += $(appman_SOURCES)
-CLEANFILES += $(appman_DATA)
+CLEANFILES = $(appman_DATA)
 
 SED = sed
 

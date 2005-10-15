@@ -1,3 +1,8 @@
+2005-10-15  Kevin E. Martin  <kem-at-freedesktop-dot-org>
+
+	* Makefile.am: Have generated files be cleaned by maintainer in
+	order to pass check-tarball test.
+
 2005-09-01  Kristian Høgsberg  <krh@redhat.com>
 
 	* Makefile.am (AM_CFLAGS): Define DFLT_XKB_CONFIG_ROOT to
