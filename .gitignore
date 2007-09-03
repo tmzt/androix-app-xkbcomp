@@ -19,3 +19,4 @@ xkbcomp
 xkbcomp.1
 xkbparse.c
 xkbparse.h
+*~
