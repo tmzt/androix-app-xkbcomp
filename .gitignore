@@ -20,3 +20,5 @@ xkbcomp.1
 xkbparse.c
 xkbparse.h
 *~
+*.o
+ylwrap
