@@ -705,7 +705,8 @@ Terminal	:	String
 			{
 			    ExprDef *expr;
 			    expr= ExprCreate(ExprValue,TypeKeyName);
-			    memcpy(expr->value.keyName,$1,4);
+			    memset(expr->value.keyName,0,5);
+			    strncpy(expr->value.keyName,$1,4);
 			    free($1);
 			    $$= expr;
 			}
