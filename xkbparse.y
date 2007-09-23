@@ -779,7 +779,7 @@ MapName		:	STRING 	{ $$= scanStr; scanStr= NULL; }
 		;
 %%
 void
-yyerror(char *s)
+yyerror(const char *s)
 {
     if (warningLevel>0) {
 	(void)fprintf(stderr,"%s: line %d of %s\n",s,lineNum,
