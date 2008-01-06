@@ -61,7 +61,7 @@ xkbcomp_SOURCES = \
 appman_PRE = \
         xkbcomp.man
 
-BUILT_SOURCES = xkbparse.c
+BUILT_SOURCES = xkbparse.c xkbparse.h
 MAINTAINERCLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
