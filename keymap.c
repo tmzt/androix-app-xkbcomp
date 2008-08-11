@@ -41,6 +41,9 @@
 
 XkbFile *	sections[MAX_SECTIONS];
 
+/**
+ * Compile the given file and store the output in result.
+ */
 Bool
 CompileKeymap(XkbFile *file,XkbFileInfo *result,unsigned merge)
 {
@@ -59,7 +62,7 @@ LEDInfo	*	unbound= NULL;
 	    required= XkmSemanticsRequired;
 	    legal= XkmSemanticsLegal;
 	    break;
-	case XkmLayoutFile:
+	case XkmLayoutFile: /* standard type  if setxkbmap -print */
 	    required= XkmLayoutRequired;
 	    legal= XkmKeymapLegal;
 	    break;
@@ -75,6 +78,7 @@ LEDInfo	*	unbound= NULL;
     have= 0;
     ok= 1;
     file= (XkbFile *)file->defs;
+    /* Check for duplicate entries in the input file */
     while ((file)&&(ok)) {
 	file->topName= mainName;
 	if ((have&(1<<file->type))!=0) {
@@ -129,6 +133,7 @@ LEDInfo	*	unbound= NULL;
 	    have|= (1<<file->type);
 	file= (XkbFile*)file->common.next;
     }
+    /* compile the sections we have in the file one-by-one, or fail. */
     if (ok) {
 	if (ok && (sections[KEYCODES]!=NULL))
 	    ok= CompileKeycodes(sections[KEYCODES],result,MergeOverride);
