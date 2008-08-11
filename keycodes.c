@@ -739,11 +739,11 @@ HandleKeycodesFile(XkbFile * file,
                                        HandleKeycodesFile))
                 info->errorCount++;
             break;
-        case StmtKeycodeDef:
+        case StmtKeycodeDef: /* e.g. <ESC> = 9; */
             if (!HandleKeycodeDef((KeycodeDef *) stmt, merge, info))
                 info->errorCount++;
             break;
-        case StmtKeyAliasDef:
+        case StmtKeyAliasDef: /* e.g. alias <MENU> = <COMP>; */
             if (!HandleAliasDef((KeyAliasDef *) stmt,
                                 merge, info->fileID, &info->aliases))
                 info->errorCount++;
@@ -752,7 +752,7 @@ HandleKeycodesFile(XkbFile * file,
             if (!HandleKeyNameVar((VarDef *) stmt, merge, info))
                 info->errorCount++;
             break;
-        case StmtIndicatorNameDef:
+        case StmtIndicatorNameDef: /* e.g. indicator 1 = "Caps Lock"; */
             if (!HandleIndicatorNameDef((IndicatorNameDef *) stmt,
                                         merge, info))
             {

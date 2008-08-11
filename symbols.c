@@ -61,7 +61,7 @@ extern Atom tok_KEYPAD;
 typedef struct _KeyInfo
 {
     CommonInfo defs;
-    unsigned long name;
+    unsigned long name; /* the 4 chars of the key name, as long */
     unsigned char groupInfo;
     unsigned char typesDefined;
     unsigned char symsDefined;
@@ -78,6 +78,9 @@ typedef struct _KeyInfo
     Atom dfltType;
 } KeyInfo;
 
+/**
+ * Init the given key info to sane values.
+ */
 static void
 InitKeyInfo(KeyInfo * info)
 {
@@ -108,6 +111,9 @@ InitKeyInfo(KeyInfo * info)
     return;
 }
 
+/**
+ * Free memory associated with this key info and reset to sane values.
+ */
 static void
 FreeKeyInfo(KeyInfo * info)
 {
@@ -136,9 +142,15 @@ FreeKeyInfo(KeyInfo * info)
     info->vmodmap = 0;
     info->nameForOverlayKey = 0;
     info->repeat = RepeatUndefined;
+    info->allowNone = 0;
     return;
 }
 
+/**
+ * Copy old into new, optionally reset old to 0.
+ * If old is reset, new simply re-uses old's memory. Otherwise, the memory is
+ * newly allocated and new points to the new memory areas.
+ */
 static Bool
 CopyKeyInfo(KeyInfo * old, KeyInfo * new, Bool clearOld)
 {

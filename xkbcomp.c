@@ -868,7 +868,7 @@ extern int yydebug;
 int
 main(int argc, char *argv[])
 {
-    FILE *file;
+    FILE *file;         /* input file (or stdin) */
     XkbFile *rtrn;
     XkbFile *mapToUse;
     int ok;
@@ -953,12 +953,12 @@ main(int argc, char *argv[])
     {
         ok = True;
         setScanState(inputFile, 1);
-        if ((inputFormat == INPUT_XKB)
+        if ((inputFormat == INPUT_XKB) /* parse .xkb file */
             && (XKBParseFile(file, &rtrn) && (rtrn != NULL)))
         {
             fclose(file);
             mapToUse = rtrn;
-            if (inputMap != NULL)
+            if (inputMap != NULL) /* map specified on cmdline? */
             {
                 while ((mapToUse)
                        && (!uStringEqual(mapToUse->name, inputMap)))
@@ -974,6 +974,7 @@ main(int argc, char *argv[])
             }
             else if (rtrn->common.next != NULL)
             {
+                /* look for map with XkbLC_Default flag. */
                 mapToUse = rtrn;
                 for (; mapToUse; mapToUse = (XkbFile *) mapToUse->common.next)
                 {
@@ -1034,7 +1035,7 @@ main(int argc, char *argv[])
                 break;
             }
         }
-        else if (inputFormat == INPUT_XKM)
+        else if (inputFormat == INPUT_XKM) /* parse xkm file */
         {
             unsigned tmp;
             bzero((char *) &result, sizeof(result));

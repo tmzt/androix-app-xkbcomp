@@ -42,14 +42,40 @@
 #define	PATH_MAX 1024
 #endif
 
-#define	PATH_CHUNK	8
+#define	PATH_CHUNK	8       /* initial szPath */
 
 static Bool noDefaultPath = False;
 static int longestPath;
-static int szPath;
-static int nPathEntries;
-static char **includePath;
+static int szPath;         /* number of entries allocated for includePath */
+static int nPathEntries;   /* number of actual entries in includePath */
+static char **includePath; /* Holds all directories we might be including data from */
 
+/**
+ * Extract the first token from an include statement.
+ * @param str_inout Input statement, modified in-place. Can be passed in
+ * repeatedly. If str_inout is NULL, the parsing has completed.
+ * @param file_rtrn Set to the include file to be used.
+ * @param map_rtrn Set to whatever comes after ), if any.
+ * @param nextop_rtrn Set to the next operation in the complete statement.
+ * @param extra_data Set to the string between ( and ), if any.
+ *
+ * @return True if parsing was succcessful, False for an illegal string.
+ *
+ * Example: "evdev+aliases(qwerty)"
+ *      str_inout = aliases(qwerty)
+ *      nextop_retrn = +
+ *      extra_data = NULL
+ *      file_rtrn = evdev
+ *      map_rtrn = NULL
+ *
+ * 2nd run with "aliases(qwerty)"
+ *      str_inout = NULL
+ *      file_rtrn = aliases
+ *      map_rtrn = qwerty
+ *      extra_data = NULL
+ *      nextop_retrn = ""
+ *
+ */
 Bool
 XkbParseIncludeMap(char **str_inout, char **file_rtrn, char **map_rtrn,
                    char *nextop_rtrn, char **extra_data)
@@ -71,9 +97,11 @@ XkbParseIncludeMap(char **str_inout, char **file_rtrn, char **map_rtrn,
     }
     else
     {
+        /* search for tokens inside the string */
         next = strpbrk(str, "|+");
         if (next)
         {
+            /* set nextop_rtrn to \0, next to next character */
             *nextop_rtrn = *next;
             *next++ = '\0';
         }
@@ -82,6 +110,7 @@ XkbParseIncludeMap(char **str_inout, char **file_rtrn, char **map_rtrn,
             *nextop_rtrn = '\0';
             next = NULL;
         }
+        /* search for :, store result in extra_data */
         tmp = strchr(str, ':');
         if (tmp != NULL)
         {
@@ -128,6 +157,9 @@ XkbParseIncludeMap(char **str_inout, char **file_rtrn, char **map_rtrn,
     return True;
 }
 
+/**
+ * Init memory for include paths.
+ */
 Bool
 XkbInitIncludePath(void)
 {
@@ -146,6 +178,9 @@ XkbAddDefaultDirectoriesToPath(void)
     XkbAddDirectoryToPath(DFLT_XKB_CONFIG_ROOT);
 }
 
+/**
+ * Remove all entries from the global includePath.
+ */
 void
 XkbClearIncludePath(void)
 {
@@ -168,6 +203,10 @@ XkbClearIncludePath(void)
     return;
 }
 
+/**
+ * Add the given path to the global includePath variable.
+ * If dir is NULL, the includePath is emptied.
+ */
 Bool
 XkbAddDirectoryToPath(const char *dir)
 {
@@ -212,6 +251,10 @@ XkbAddDirectoryToPath(const char *dir)
 
 /***====================================================================***/
 
+/**
+ * Return the xkb directory based on the type.
+ * Do not free the memory returned by this function.
+ */
 char *
 XkbDirectoryForInclude(unsigned type)
 {
@@ -263,6 +306,19 @@ typedef struct _FileCacheEntry
 } FileCacheEntry;
 static FileCacheEntry *fileCache;
 
+/**
+ * Add the file with the given name to the internal cache to avoid opening and
+ * parsing the file multiple times. If a cache entry for the same name + type
+ * is already present, the entry is overwritten and the data belonging to the
+ * previous entry is returned.
+ *
+ * @parameter name The name of the file (e.g. evdev).
+ * @parameter type Type of the file (XkbTypesIdx, ... or XkbSemanticsFile, ...)
+ * @parameter path The full path to the file.
+ * @parameter data Already parsed data.
+ *
+ * @return The data from the overwritten file or NULL.
+ */
 void *
 XkbAddFileToCache(char *name, unsigned type, char *path, void *data)
 {
@@ -292,6 +348,15 @@ XkbAddFileToCache(char *name, unsigned type, char *path, void *data)
     return NULL;
 }
 
+/**
+ * Search for the given name + type in the cache.
+ *
+ * @parameter name The name of the file (e.g. evdev).
+ * @parameter type Type of the file (XkbTypesIdx, ... or XkbSemanticsFile, ...)
+ * @parameter pathRtrn Set to the full path of the given entry.
+ *
+ * @return the data from the cache entry or NULL if no matching entry was found.
+ */
 void *
 XkbFindFileInCache(char *name, unsigned type, char **pathRtrn)
 {
@@ -310,6 +375,16 @@ XkbFindFileInCache(char *name, unsigned type, char **pathRtrn)
 
 /***====================================================================***/
 
+/**
+ * Search for the given file name in the include directories.
+ *
+ * @param type one of XkbTypesIndex, XkbCompatMapIndex, ..., or
+ * XkbSemanticsFile, XkmKeymapFile, ...
+ * @param pathReturn is set to the full path of the file if found.
+ *
+ * @return an FD to the file or NULL. If NULL is returned, the value of
+ * pathRtrn is undefined.
+ */
 FILE *
 XkbFindFileInPath(char *name, unsigned type, char **pathRtrn)
 {

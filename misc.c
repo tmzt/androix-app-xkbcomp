@@ -49,6 +49,8 @@ ProcessIncludeFile(IncludeStmt * stmt,
     rtrn = XkbFindFileInCache(stmt->file, file_type, &stmt->path);
     if (rtrn == NULL)
     {
+        /* file not in cache, open it, parse it and store it in cache for next
+           time. */
         file = XkbFindFileInPath(stmt->file, file_type, &stmt->path);
         if (file == NULL)
         {
@@ -62,6 +64,7 @@ ProcessIncludeFile(IncludeStmt * stmt,
         setScanState(stmt->file, 1);
         if (debugFlags & 2)
             INFO1("About to parse include file %s\n", stmt->file);
+        /* parse the file */
         if ((XKBParseFile(file, &rtrn) == 0) || (rtrn == NULL))
         {
             setScanState(oldFile, oldLine);
