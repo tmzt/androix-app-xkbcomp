@@ -1,4 +1,3 @@
-/* $Xorg: indicators.c,v 1.3 2000/08/17 19:54:31 cpqbld Exp $ */
 /************************************************************
  Copyright (c) 1994 by Silicon Graphics Computer Systems, Inc.
 
@@ -24,7 +23,6 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/indicators.c,v 1.4 2001/01/17 23:45:43 dawes Exp $ */
 
 #include "xkbcomp.h"
 #include "misc.h"

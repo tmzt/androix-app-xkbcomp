@@ -1,4 +1,3 @@
-/* $Xorg: xkbscan.c,v 1.3 2000/08/17 19:54:34 cpqbld Exp $ */
 /************************************************************
  Copyright (c) 1994 by Silicon Graphics Computer Systems, Inc.
 
@@ -24,7 +23,6 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/xkbscan.c,v 3.10 2001/01/17 23:45:45 dawes Exp $ */
 
 #include <stdio.h>
 #include <ctype.h>

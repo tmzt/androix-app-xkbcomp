@@ -1,4 +1,3 @@
-/* $Xorg: geometry.c,v 1.3 2000/08/17 19:54:30 cpqbld Exp $ */
 /************************************************************
  Copyright (c) 1994 by Silicon Graphics Computer Systems, Inc.
 
@@ -24,7 +23,6 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/geometry.c,v 1.5tsi Exp $ */
 
 #include "xkbcomp.h"
 #include "tokens.h"

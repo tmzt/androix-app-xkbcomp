@@ -1,6 +1,5 @@
 
   /*\
-   * $Xorg: utils.c,v 1.4 2000/08/17 19:54:33 cpqbld Exp $
    *
    *		              COPYRIGHT 1990
    *		        DIGITAL EQUIPMENT CORPORATION
@@ -25,7 +24,6 @@
    * used in advertising or publicity pertaining to distribution of the 
    * software without specific, written prior permission.
   \*/
-/* $XFree86: xc/programs/xkbcomp/utils.c,v 3.6 2001/07/25 15:05:24 dawes Exp $ */
 
 #include 	"utils.h"
 #include	<ctype.h>

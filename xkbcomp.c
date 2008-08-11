@@ -1,4 +1,3 @@
-/* $Xorg: xkbcomp.c,v 1.4 2000/08/17 19:54:33 cpqbld Exp $ */
 /************************************************************
  Copyright (c) 1994 by Silicon Graphics Computer Systems, Inc.
 
@@ -24,7 +23,6 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/xkbcomp.c,v 3.20 2003/09/24 02:43:38 dawes Exp $ */
 
 #include <stdio.h>
 #include <ctype.h>

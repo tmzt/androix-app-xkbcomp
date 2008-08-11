@@ -1,4 +1,3 @@
-/* $Xorg: xkbpath.c,v 1.3 2000/08/17 19:54:34 cpqbld Exp $ */
 /************************************************************
  Copyright (c) 1994 by Silicon Graphics Computer Systems, Inc.
 
@@ -24,7 +23,6 @@
  THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  ********************************************************/
-/* $XFree86: xc/programs/xkbcomp/xkbpath.c,v 3.7 2002/06/05 00:00:38 dawes Exp $ */
 
 #include <X11/Xlib.h>
 #include <X11/XKBlib.h>
