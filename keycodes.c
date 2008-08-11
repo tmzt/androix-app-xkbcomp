@@ -312,6 +312,10 @@ FindKeyByLong(KeyNamesInfo * info, unsigned long name)
     return 0;
 }
 
+/**
+ * Store the name of the key as a long in the info struct under the given
+ * keycode. If the same keys is referred to twice, print a warning.
+ */
 static Bool
 AddKeyName(KeyNamesInfo * info,
            int kc,
@@ -562,9 +566,12 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
     return (info->errorCount == 0);
 }
 
+/**
+ * Parse the given statement and store the output in the info struct.
+ * e.g. <ESC> = 9
+ */
 static int
-HandleKeycodeDef(KeycodeDef * stmt,
-                 XkbDescPtr xkb, unsigned merge, KeyNamesInfo * info)
+HandleKeycodeDef(KeycodeDef * stmt, unsigned merge, KeyNamesInfo * info)
 {
     int code;
     ExprResult result;
@@ -596,8 +603,7 @@ HandleKeycodeDef(KeycodeDef * stmt,
 #define	MAX_KEYCODE_DEF		1
 
 static int
-HandleKeyNameVar(VarDef * stmt, XkbDescPtr xkb, unsigned merge,
-                 KeyNamesInfo * info)
+HandleKeyNameVar(VarDef * stmt, unsigned merge, KeyNamesInfo * info)
 {
     ExprResult tmp, field;
     ExprDef *arrayNdx;
@@ -688,7 +694,7 @@ HandleKeyNameVar(VarDef * stmt, XkbDescPtr xkb, unsigned merge,
 
 static int
 HandleIndicatorNameDef(IndicatorNameDef * def,
-                       XkbDescPtr xkb, unsigned merge, KeyNamesInfo * info)
+                       unsigned merge, KeyNamesInfo * info)
 {
     IndicatorNameInfo ii;
     ExprResult tmp;
@@ -734,7 +740,7 @@ HandleKeycodesFile(XkbFile * file,
                 info->errorCount++;
             break;
         case StmtKeycodeDef:
-            if (!HandleKeycodeDef((KeycodeDef *) stmt, xkb, merge, info))
+            if (!HandleKeycodeDef((KeycodeDef *) stmt, merge, info))
                 info->errorCount++;
             break;
         case StmtKeyAliasDef:
@@ -742,12 +748,12 @@ HandleKeycodesFile(XkbFile * file,
                                 merge, info->fileID, &info->aliases))
                 info->errorCount++;
             break;
-        case StmtVarDef:
-            if (!HandleKeyNameVar((VarDef *) stmt, xkb, merge, info))
+        case StmtVarDef: /* e.g. minimum, maximum */
+            if (!HandleKeyNameVar((VarDef *) stmt, merge, info))
                 info->errorCount++;
             break;
         case StmtIndicatorNameDef:
-            if (!HandleIndicatorNameDef((IndicatorNameDef *) stmt, xkb,
+            if (!HandleIndicatorNameDef((IndicatorNameDef *) stmt,
                                         merge, info))
             {
                 info->errorCount++;
