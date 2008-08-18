@@ -494,7 +494,7 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
 {
     unsigned newMerge;
     XkbFile *rtrn;
-    KeyNamesInfo included;
+    KeyNamesInfo included = {0};
     Bool haveSelf;
 
     haveSelf = False;

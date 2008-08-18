@@ -43,7 +43,7 @@ ProcessIncludeFile(IncludeStmt * stmt,
 {
     FILE *file;
     XkbFile *rtrn, *mapToUse;
-    char oldFile[1024];
+    char oldFile[1024] = {0};
     int oldLine = lineNum;
 
     rtrn = XkbFindFileInCache(stmt->file, file_type, &stmt->path);

@@ -37,7 +37,7 @@
 
 FILE *yyin = NULL;
 
-static char scanFileBuf[1024];
+static char scanFileBuf[1024] = {0};
 char *scanFile = scanFileBuf;
 int lineNum = 0;
 
