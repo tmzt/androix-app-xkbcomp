@@ -45,7 +45,6 @@
 #define	PATH_CHUNK	8       /* initial szPath */
 
 static Bool noDefaultPath = False;
-static int longestPath;
 static int szPath;         /* number of entries allocated for includePath */
 static int nPathEntries;   /* number of actual entries in includePath */
 static char **includePath; /* Holds all directories we might be including data from */
@@ -197,7 +196,6 @@ XkbClearIncludePath(void)
             }
         }
         nPathEntries = 0;
-        longestPath = 0;
     }
     noDefaultPath = True;
     return;
@@ -226,8 +224,6 @@ XkbAddDirectoryToPath(const char *dir)
                dir, PATH_MAX - 3);
         return False;
     }
-    if (len > longestPath)
-        longestPath = len;
     if (nPathEntries >= szPath)
     {
         szPath += PATH_CHUNK;
