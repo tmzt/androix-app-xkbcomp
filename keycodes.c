@@ -81,6 +81,11 @@ typedef struct _KeyNamesInfo
     AliasInfo *aliases;
 } KeyNamesInfo;
 
+static void HandleKeycodesFile(XkbFile * file,
+                               XkbDescPtr xkb,
+                               unsigned merge,
+                               KeyNamesInfo * info);
+
 static void
 InitIndicatorNameInfo(IndicatorNameInfo * ii, KeyNamesInfo * info)
 {
@@ -483,12 +488,6 @@ MergeIncludedKeycodes(KeyNamesInfo * into, KeyNamesInfo * from,
     return;
 }
 
-typedef void (*FileHandler) (XkbFile * /* rtrn */ ,
-                             XkbDescPtr /* xkb */ ,
-                             unsigned /* merge */ ,
-                             KeyNamesInfo *     /* included */
-    );
-
 /**
  * Handle the given include statement (e.g. "include "evdev+aliases(qwerty)").
  *
@@ -497,8 +496,7 @@ typedef void (*FileHandler) (XkbFile * /* rtrn */ ,
  * @param info Struct to store the key info in.
  */
 static Bool
-HandleIncludeKeycodes(IncludeStmt * stmt,
-                      XkbDescPtr xkb, KeyNamesInfo * info, FileHandler hndlr)
+HandleIncludeKeycodes(IncludeStmt * stmt, XkbDescPtr xkb, KeyNamesInfo * info)
 {
     unsigned newMerge;
     XkbFile *rtrn;
@@ -522,7 +520,7 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
     else if (ProcessIncludeFile(stmt, XkmKeyNamesIndex, &rtrn, &newMerge))
     {
         InitKeyNamesInfo(&included);
-        (*hndlr) (rtrn, xkb, MergeOverride, &included);
+        HandleKeycodesFile(rtrn, xkb, MergeOverride, &included);
         if (stmt->stmt != NULL)
         {
             if (included.name != NULL)
@@ -554,7 +552,7 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
             else if (ProcessIncludeFile(next, XkmKeyNamesIndex, &rtrn, &op))
             {
                 InitKeyNamesInfo(&next_incl);
-                (*hndlr) (rtrn, xkb, MergeOverride, &next_incl);
+                HandleKeycodesFile(rtrn, xkb, MergeOverride, &next_incl);
                 MergeIncludedKeycodes(&included, &next_incl, op);
                 ClearKeyNamesInfo(&next_incl);
             }
@@ -763,8 +761,7 @@ HandleKeycodesFile(XkbFile * file,
         switch (stmt->stmtType)
         {
         case StmtInclude:    /* e.g. include "evdev+aliases(qwerty)" */
-            if (!HandleIncludeKeycodes((IncludeStmt *) stmt, xkb, info,
-                                       HandleKeycodesFile))
+            if (!HandleIncludeKeycodes((IncludeStmt *) stmt, xkb, info))
                 info->errorCount++;
             break;
         case StmtKeycodeDef: /* e.g. <ESC> = 9; */
