@@ -2079,8 +2079,15 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
     xkb->map->key_sym_map[kc].width = width;
     for (i = 0; i < nGroups; i++)
     {
-        /* assign kt_index[i] to the index of the type in map->types */
-        xkb->map->key_sym_map[kc].kt_index[i] = types[i];
+        /* assign kt_index[i] to the index of the type in map->types.
+         * kt_index[i] may have been set by a previous run (if we have two
+         * layouts specified). Let's not overwrite it with the ONE_LEVEL
+         * default group if we dont even have keys for this group anyway.
+         *
+         * FIXME: There should be a better fix for this.
+         */
+        if (key->numLevels[i])
+            xkb->map->key_sym_map[kc].kt_index[i] = types[i];
         if (key->syms[i] != NULL)
         {
             /* fill key to "width" symbols*/
