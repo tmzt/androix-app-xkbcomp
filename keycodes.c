@@ -616,7 +616,7 @@ HandleKeycodeDef(KeycodeDef * stmt, unsigned merge, KeyNamesInfo * info)
  * @return 1 on success, 0 otherwise.
  */
 static int
-HandleKeyNameVar(VarDef * stmt, unsigned merge, KeyNamesInfo * info)
+HandleKeyNameVar(VarDef * stmt, KeyNamesInfo * info)
 {
     ExprResult tmp, field;
     ExprDef *arrayNdx;
@@ -774,7 +774,7 @@ HandleKeycodesFile(XkbFile * file,
                 info->errorCount++;
             break;
         case StmtVarDef: /* e.g. minimum, maximum */
-            if (!HandleKeyNameVar((VarDef *) stmt, merge, info))
+            if (!HandleKeyNameVar((VarDef *) stmt, info))
                 info->errorCount++;
             break;
         case StmtIndicatorNameDef: /* e.g. indicator 1 = "Caps Lock"; */
