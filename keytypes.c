@@ -508,6 +508,10 @@ DeleteLevel1MapEntries(KeyTypeInfo * type)
     return;
 }
 
+/**
+ * Return a pointer to the next free XkbKTMapEntry, reallocating space if
+ * necessary.
+ */
 static XkbKTMapEntryPtr
 NextMapEntry(KeyTypeInfo * type)
 {
@@ -603,6 +607,14 @@ AddPreserve(XkbDescPtr xkb,
     return True;
 }
 
+/**
+ * Add a new KTMapEntry to the given key type. If an entry with the same mods
+ * already exists, the level is updated (if clobber is TRUE). Otherwise, a new
+ * entry is created.
+ *
+ * @param clobber Overwrite existing entry.
+ * @param report True if a warning is to be printed on.
+ */
 Bool
 AddMapEntry(XkbDescPtr xkb,
             KeyTypeInfo * type,
@@ -679,8 +691,8 @@ SetMapEntry(KeyTypeInfo * type,
         return ReportTypeShouldBeArray(type, "map entry");
     if (!ExprResolveModMask(arrayNdx, &rtrn, LookupVModMask, (XPointer) xkb))
         return ReportTypeBadType(type, "map entry", "modifier mask");
-    entry.mods.real_mods = rtrn.uval & 0xff;
-    entry.mods.vmods = (rtrn.uval >> 8) & 0xffff;
+    entry.mods.real_mods = rtrn.uval & 0xff;      /* modifiers < 512 */
+    entry.mods.vmods = (rtrn.uval >> 8) & 0xffff; /* modifiers > 512 */
     if ((entry.mods.real_mods & (~type->mask)) ||
         ((entry.mods.vmods & (~type->vmask)) != 0))
     {
@@ -859,6 +871,11 @@ SetLevelName(KeyTypeInfo * type, ExprDef * arrayNdx, ExprDef * value)
 
 /***====================================================================***/
 
+/**
+ * Parses the fields in a type "..." { } description.
+ *
+ * @param field The field to parse (e.g. modifiers, map, level_name)
+ */
 static Bool
 SetKeyTypeField(KeyTypeInfo * type,
                 XkbDescPtr xkb,
@@ -875,14 +892,15 @@ SetKeyTypeField(KeyTypeInfo * type,
             WARN("The modifiers field of a key type is not an array\n");
             ACTION("Illegal array subscript ignored\n");
         }
+        /* get modifier mask for current type */
         if (!ExprResolveModMask(value, &tmp, LookupVModMask, (XPointer) xkb))
         {
             ERROR("Key type mask field must be a modifier mask\n");
             ACTION("Key type definition ignored\n");
             return False;
         }
-        mods = tmp.uval & 0xff;
-        vmods = (tmp.uval >> 8) & 0xffff;
+        mods = tmp.uval & 0xff; /* core mods */
+        vmods = (tmp.uval >> 8) & 0xffff; /* xkb virtual mods */
         if (type->defs.defined & _KT_Mask)
         {
             WARN1("Multiple modifier mask definitions for key type %s\n",
@@ -966,6 +984,10 @@ HandleKeyTypeBody(VarDef * def,
     return ok;
 }
 
+/**
+ * Process a type "XYZ" { } specification in the xkb_types section.
+ *
+ */
 static int
 HandleKeyTypeDef(KeyTypeDef * def,
                  XkbDescPtr xkb, unsigned merge, KeyTypesInfo * info)
@@ -992,6 +1014,7 @@ HandleKeyTypeDef(KeyTypeDef * def,
     type.lvlNames = NULL;
     type.preserve = NULL;
 
+    /* Parse the actual content. */
     if (!HandleKeyTypeBody(def->body, xkb, &type, info))
     {
         info->errorCount++;
@@ -1030,6 +1053,7 @@ HandleKeyTypeDef(KeyTypeDef * def,
             AddLevelName(&type, i, info->dflt.lvlNames[i], False, False);
         }
     }
+    /* Now add the new keytype to the info struct */
     if (!AddKeyType(xkb, info, &type))
     {
         info->errorCount++;
@@ -1038,6 +1062,13 @@ HandleKeyTypeDef(KeyTypeDef * def,
     return True;
 }
 
+/**
+ * Process an xkb_types section.
+ *
+ * @param file The parsed xkb_types section.
+ * @param merge Merge Strategy (e.g. MergeOverride)
+ * @param info Pointer to memory where the outcome will be stored.
+ */
 static void
 HandleKeyTypesFile(XkbFile * file,
                    XkbDescPtr xkb, unsigned merge, KeyTypesInfo * info)
@@ -1055,7 +1086,7 @@ HandleKeyTypesFile(XkbFile * file,
                                        HandleKeyTypesFile))
                 info->errorCount++;
             break;
-        case StmtKeyTypeDef:
+        case StmtKeyTypeDef: /* e.g. type "ONE_LEVEL" */
             if (!HandleKeyTypeDef((KeyTypeDef *) stmt, xkb, merge, info))
                 info->errorCount++;
             break;
@@ -1063,7 +1094,7 @@ HandleKeyTypesFile(XkbFile * file,
             if (!HandleKeyTypeVar((VarDef *) stmt, xkb, info))
                 info->errorCount++;
             break;
-        case StmtVModDef:
+        case StmtVModDef: /* virtual_modifiers NumLock, ... */
             if (!HandleVModDef((VModDef *) stmt, merge, &info->vmods))
                 info->errorCount++;
             break;

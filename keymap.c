@@ -43,6 +43,8 @@ XkbFile *sections[MAX_SECTIONS];
 
 /**
  * Compile the given file and store the output in result.
+ * @param file A list of XkbFiles, each denoting one type (e.g.
+ * XkmKeyNamesIdx, etc.)
  */
 Bool
 CompileKeymap(XkbFile * file, XkbFileInfo * result, unsigned merge)

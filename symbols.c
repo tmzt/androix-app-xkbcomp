@@ -219,7 +219,7 @@ typedef struct _ModMapEntry
 #define	SYMBOLS_CHUNK		20
 typedef struct _SymbolsInfo
 {
-    char *name;
+    char *name;         /* e.g. pc+us+inet(evdev) */
     int errorCount;
     unsigned fileID;
     unsigned merge;
@@ -1722,6 +1722,14 @@ FindKeyForSymbol(XkbDescPtr xkb, KeySym sym, unsigned int *kc_rtrn)
     return False;
 }
 
+/**
+ * Find the given name in the xkb->map->types and return its index.
+ *
+ * @param name The atom to search for.
+ * @param type_rtrn Set to the index of the name if found.
+ *
+ * @return True if found, False otherwise.
+ */
 static Bool
 FindNamedType(XkbDescPtr xkb, Atom name, unsigned *type_rtrn)
 {
@@ -1763,6 +1771,22 @@ KSIsUpper(KeySym ks)
     return (ks == upper ? True : False);
 }
 
+/**
+ * Assign a type to the given sym and return the Atom for the type assigned.
+ *
+ * Simple recipe:
+ * - ONE_LEVEL for width 0/1
+ * - ALPHABETIC for 2 shift levels, with lower/upercase
+ * - KEYPAD for keypad keys.
+ * - TWO_LEVEL for other 2 shift level keys.
+ * and the same for four level keys.
+ *
+ * @param width Number of sysms in syms.
+ * @param syms The keysyms for the given key (must be size width).
+ * @param typeNameRtrn Set to the Atom of the type name.
+ *
+ * @returns True if a type could be found, False otherwise.
+ */
 static Bool
 FindAutomaticType(int width, KeySym * syms, Atom * typeNameRtrn,
                   Bool * autoType)
@@ -1805,10 +1829,15 @@ FindAutomaticType(int width, KeySym * syms, Atom * typeNameRtrn,
             *typeNameRtrn = XkbInternAtom(NULL, "FOUR_LEVEL_KEYPAD", False);
         else
             *typeNameRtrn = XkbInternAtom(NULL, "FOUR_LEVEL", False);
+        /* XXX: why not set autoType here? */
     }
     return ((width >= 0) && (width <= 4));
 }
 
+/**
+ * Ensure the given KeyInfo is in a coherent state, i.e. no gaps between the
+ * groups, and reduce to one group if all groups are identical anyway.
+ */
 static void
 PrepareKeyDef(KeyInfo * key)
 {
@@ -1816,6 +1845,7 @@ PrepareKeyDef(KeyInfo * key)
     Bool identical;
 
     defined = key->symsDefined | key->actsDefined | key->typesDefined;
+    /* get highest group number */
     for (i = XkbNumKbdGroups - 1; i >= 0; i--)
     {
         if (defined & (1 << i))
@@ -1913,6 +1943,11 @@ PrepareKeyDef(KeyInfo * key)
     return;
 }
 
+/**
+ * Copy the KeyInfo into result.
+ *
+ * This function recurses.
+ */
 static Bool
 CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
 {
@@ -1927,6 +1962,8 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
 
     xkb = result->xkb;
     useAlias = (start_from == 0);
+
+    /* get the keycode for the key. */
     if (!FindNamedKey(xkb, key->name, &kc, useAlias, CreateKeyNames(xkb),
                       start_from))
     {
@@ -1950,6 +1987,7 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
         if (key->acts[i])
             haveActions = True;
         autoType = False;
+        /* Assign the type to the key, if it is missing. */
         if (key->types[i] == None)
         {
             if (key->dfltType != None)
@@ -1987,6 +2025,7 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
             }
             types[i] = XkbTwoLevelIndex;
         }
+        /* if the type specifies less syms than the key has, shrink the key */
         type = &xkb->map->types[types[i]];
         if (type->num_levels < key->numLevels[i])
         {
@@ -2007,6 +2046,8 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
         if (type->num_levels > width)
             width = type->num_levels;
     }
+
+    /* width is now the largest width found */
 
     i = width * nGroups;
     outSyms = XkbResizeKeySyms(xkb, kc, i);
@@ -2033,13 +2074,16 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
         i = key->groupInfo;
     else
         i = xkb->map->key_sym_map[kc].group_info;
+
     xkb->map->key_sym_map[kc].group_info = XkbSetNumGroups(i, nGroups);
     xkb->map->key_sym_map[kc].width = width;
     for (i = 0; i < nGroups; i++)
     {
+        /* assign kt_index[i] to the index of the type in map->types */
         xkb->map->key_sym_map[kc].kt_index[i] = types[i];
         if (key->syms[i] != NULL)
         {
+            /* fill key to "width" symbols*/
             for (tmp = 0; tmp < width; tmp++)
             {
                 if (tmp < key->numLevels[i])
@@ -2098,6 +2142,8 @@ CopySymbolsDef(XkbFileInfo * result, KeyInfo * key, int start_from)
             xkb->ctrls->per_key_repeat[kc / 8] &= ~(1 << (kc % 8));
         xkb->server->explicit[kc] |= XkbExplicitAutoRepeatMask;
     }
+
+    /* do the same thing for the next key */
     CopySymbolsDef(result, key, kc + 1);
     return True;
 }
@@ -2141,6 +2187,13 @@ CopyModMapDef(XkbFileInfo * result, ModMapEntry * entry)
     return True;
 }
 
+/**
+ * Handle the xkb_symbols section of an xkb file.
+ *
+ * @param file The parsed xkb_symbols section of the xkb file.
+ * @param result Handle to the data to store the result in.
+ * @param merge Merge strategy (e.g. MergeOverride).
+ */
 Bool
 CompileSymbols(XkbFile * file, XkbFileInfo * result, unsigned merge)
 {
@@ -2159,6 +2212,8 @@ CompileSymbols(XkbFile * file, XkbFileInfo * result, unsigned merge)
     if (info.errorCount == 0)
     {
         KeyInfo *key;
+
+        /* alloc memory in the xkb struct */
         if (XkbAllocNames(xkb, XkbSymbolsNameMask | XkbGroupNamesMask, 0, 0)
             != Success)
         {
@@ -2185,6 +2240,8 @@ CompileSymbols(XkbFile * file, XkbFileInfo * result, unsigned merge)
             ACTION("Symbols not added\n");
             return False;
         }
+
+        /* now copy info into xkb. */
         xkb->names->symbols = XkbInternAtom(xkb->dpy, info.name, False);
         if (info.aliases)
             ApplyAliases(xkb, False, &info.aliases);
@@ -2193,10 +2250,12 @@ CompileSymbols(XkbFile * file, XkbFileInfo * result, unsigned merge)
             if (info.groupNames[i] != None)
                 xkb->names->groups[i] = info.groupNames[i];
         }
+        /* sanitize keys */
         for (key = info.keys, i = 0; i < info.nKeys; i++, key++)
         {
             PrepareKeyDef(key);
         }
+        /* copy! */
         for (key = info.keys, i = 0; i < info.nKeys; i++, key++)
         {
             if (!CopySymbolsDef(result, key, 0))

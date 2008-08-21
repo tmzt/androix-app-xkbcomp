@@ -70,6 +70,14 @@ ClearVModInfo(VModInfo * info, XkbDescPtr xkb)
 
 /***====================================================================***/
 
+/**
+ * Handle one entry in the virtualModifiers line (e.g. NumLock).
+ * If the entry is e.g. NumLock=Mod1, stmt->value is not NULL, and the
+ * XkbServerMap's vmod is set to the given modifier. Otherwise, the vmod is 0.
+ *
+ * @param stmt The statement specifying the name and (if any the value).
+ * @param mergeMode Merge strategy (e.g. MergeOverride)
+ */
 Bool
 HandleVModDef(VModDef * stmt, unsigned mergeMode, VModInfo * info)
 {
@@ -147,6 +155,18 @@ HandleVModDef(VModDef * stmt, unsigned mergeMode, VModInfo * info)
     return False;
 }
 
+/**
+ * Returns the index of the given modifier in the xkb->names->vmods array.
+ *
+ * @param priv Pointer to the xkb data structure.
+ * @param elem Must be None, otherwise return False.
+ * @param field The Atom of the modifier's name (e.g. Atom for LAlt)
+ * @param type Must be TypeInt, otherwise return False.
+ * @param val_rtrn Set to the index of the modifier that matches.
+ *
+ * @return True on success, False otherwise. If False is returned, val_rtrn is
+ * undefined.
+ */
 int
 LookupVModIndex(XPointer priv,
                 Atom elem, Atom field, unsigned type, ExprResult * val_rtrn)
@@ -162,9 +182,15 @@ LookupVModIndex(XPointer priv,
     {
         return False;
     }
+    /* get the actual name */
     fieldStr = XkbAtomGetString(xkb->dpy, field);
     if (fieldStr == NULL)
         return False;
+    /* For each named modifier, get the name and compare it to the one passed
+     * in. If we get a match, return the index of the modifier.
+     * The order of modifiers is the same as in the virtual_modifiers line in
+     * the xkb_types section.
+     */
     for (i = 0; i < XkbNumVirtualMods; i++)
     {
         modStr = XkbAtomGetString(xkb->dpy, xkb->names->vmods[i]);
@@ -177,6 +203,16 @@ LookupVModIndex(XPointer priv,
     return False;
 }
 
+/**
+ * Get the mask for the given modifier and set val_rtrn.uval to the mask.
+ * Note that the mask returned is always > 512.
+ *
+ * @param priv Pointer to xkb data structure.
+ * @param val_rtrn Set to the mask returned.
+ *
+ * @return True on success, False otherwise. If False is returned, val_rtrn is
+ * undefined.
+ */
 int
 LookupVModMask(XPointer priv,
                Atom elem, Atom field, unsigned type, ExprResult * val_rtrn)

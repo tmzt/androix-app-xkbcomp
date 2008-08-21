@@ -64,17 +64,17 @@ typedef struct _IndicatorNameInfo
 
 typedef struct _KeyNamesInfo
 {
-    char *name;
+    char *name;     /* e.g. evdev+aliases(qwerty) */
     int errorCount;
     unsigned fileID;
     unsigned merge;
-    int computedMin;
-    int computedMax;
+    int computedMin; /* lowest keycode stored */
+    int computedMax; /* highest keycode stored */
     int explicitMin;
     int explicitMax;
     int effectiveMin;
     int effectiveMax;
-    unsigned long names[XkbMaxLegalKeyCode + 1];
+    unsigned long names[XkbMaxLegalKeyCode + 1]; /* 4-letter name of key, keycode is the index */
     unsigned files[XkbMaxLegalKeyCode + 1];
     unsigned char has_alt_forms[XkbMaxLegalKeyCode + 1];
     IndicatorNameInfo *leds;
@@ -315,6 +315,7 @@ FindKeyByLong(KeyNamesInfo * info, unsigned long name)
 /**
  * Store the name of the key as a long in the info struct under the given
  * keycode. If the same keys is referred to twice, print a warning.
+ * Note that the key's name is stored as a long, the keycode is the index.
  */
 static Bool
 AddKeyName(KeyNamesInfo * info,
@@ -488,6 +489,13 @@ typedef void (*FileHandler) (XkbFile * /* rtrn */ ,
                              KeyNamesInfo *     /* included */
     );
 
+/**
+ * Handle the given include statement (e.g. "include "evdev+aliases(qwerty)").
+ *
+ * @param stmt The include statement from the keymap file.
+ * @param xkb Unused for all but the xkb->flags.
+ * @param info Struct to store the key info in.
+ */
 static Bool
 HandleIncludeKeycodes(IncludeStmt * stmt,
                       XkbDescPtr xkb, KeyNamesInfo * info, FileHandler hndlr)
@@ -510,7 +518,7 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
         info->explicitMin = XkbMinLegalKeyCode;
         info->explicitMax = XkbMaxLegalKeyCode;
         return (info->errorCount == 0);
-    }
+    } /* parse file, store returned info in the xkb struct */
     else if (ProcessIncludeFile(stmt, XkmKeyNamesIndex, &rtrn, &newMerge))
     {
         InitKeyNamesInfo(&included);
@@ -525,9 +533,10 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
     }
     else
     {
-        info->errorCount += 10;
+        info->errorCount += 10; /* XXX: why 10?? */
         return False;
     }
+    /* Do we have more than one include statement? */
     if ((stmt->next != NULL) && (included.errorCount < 1))
     {
         IncludeStmt *next;
@@ -551,7 +560,7 @@ HandleIncludeKeycodes(IncludeStmt * stmt,
             }
             else
             {
-                info->errorCount += 10;
+                info->errorCount += 10; /* XXX: Why 10?? */
                 return False;
             }
         }
@@ -602,6 +611,12 @@ HandleKeycodeDef(KeycodeDef * stmt, unsigned merge, KeyNamesInfo * info)
 #define	MIN_KEYCODE_DEF		0
 #define	MAX_KEYCODE_DEF		1
 
+/**
+ * Handle the minimum/maximum statement of the xkb file.
+ * Sets explicitMin/Max and effectiveMin/Max of the info struct.
+ *
+ * @return 1 on success, 0 otherwise.
+ */
 static int
 HandleKeyNameVar(VarDef * stmt, unsigned merge, KeyNamesInfo * info)
 {
@@ -722,6 +737,19 @@ HandleIndicatorNameDef(IndicatorNameDef * def,
     return True;
 }
 
+/**
+ * Handle the xkb_keycodes section of a xkb file.
+ * All information about parsed keys is stored in the info struct.
+ *
+ * Such a section may have include statements, in which case this function is
+ * semi-recursive (it calls HandleIncludeKeycodes, which may call
+ * HandleKeycodesFile again).
+ *
+ * @param file The input file (parsed xkb_keycodes section)
+ * @param xkb Necessary to pass down, may have flags changed.
+ * @param merge Merge strategy (MergeOverride, etc.)
+ * @param info Struct to contain the fully parsed key information.
+ */
 static void
 HandleKeycodesFile(XkbFile * file,
                    XkbDescPtr xkb, unsigned merge, KeyNamesInfo * info)
@@ -734,7 +762,7 @@ HandleKeycodesFile(XkbFile * file,
     {
         switch (stmt->stmtType)
         {
-        case StmtInclude:
+        case StmtInclude:    /* e.g. include "evdev+aliases(qwerty)" */
             if (!HandleIncludeKeycodes((IncludeStmt *) stmt, xkb, info,
                                        HandleKeycodesFile))
                 info->errorCount++;
@@ -786,23 +814,35 @@ HandleKeycodesFile(XkbFile * file,
     return;
 }
 
+/**
+ * Compile the xkb_keycodes section, parse it's output, return the results.
+ *
+ * @param file The parsed XKB file (may have include statements requiring
+ * further parsing)
+ * @param result The effective keycodes, as gathered from the file.
+ * @param merge Merge strategy.
+ *
+ * @return True on success, False otherwise.
+ */
 Bool
 CompileKeycodes(XkbFile * file, XkbFileInfo * result, unsigned merge)
 {
-    KeyNamesInfo info;
+    KeyNamesInfo info; /* contains all the info after parsing */
     XkbDescPtr xkb;
 
     xkb = result->xkb;
     InitKeyNamesInfo(&info);
     HandleKeycodesFile(file, xkb, merge, &info);
 
+    /* all the keys are now stored in info */
+
     if (info.errorCount == 0)
     {
-        if (info.explicitMin > 0)
+        if (info.explicitMin > 0) /* if "minimum" statement was present */
             xkb->min_key_code = info.effectiveMin;
         else
             xkb->min_key_code = info.computedMin;
-        if (info.explicitMax > 0)
+        if (info.explicitMax > 0) /* if "maximum" statement was present */
             xkb->max_key_code = info.effectiveMax;
         else
             xkb->max_key_code = info.computedMax;

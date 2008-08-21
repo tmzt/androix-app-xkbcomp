@@ -36,6 +36,18 @@
 
 /***====================================================================***/
 
+/**
+ * Open the file given in the include statement and parse it's content.
+ * If the statement defines a specific map to use, this map is returned in
+ * file_rtrn. Otherwise, the default map is returned.
+ *
+ * @param stmt The include statement, specifying the file name to look for.
+ * @param file_type Type of file (XkmKeyNamesIdx, etc.)
+ * @param file_rtrn Returns the key map to be used.
+ * @param merge_rtrn Always returns stmt->merge.
+ *
+ * @return True on success or False otherwise.
+ */
 Bool
 ProcessIncludeFile(IncludeStmt * stmt,
                    unsigned file_type,
@@ -438,6 +450,18 @@ ComputeKbdDefaults(XkbDescPtr xkb)
     return Success;
 }
 
+/**
+ * Find the key with the given name and return its keycode in kc_rtrn.
+ *
+ * @param name The 4-letter name of the key as a long.
+ * @param kc_rtrn Set to the keycode if the key was found, otherwise 0.
+ * @param use_aliases True if the key aliases should be searched too.
+ * @param create If True and the key is not found, it is added to the
+ *        xkb->names at the first free keycode.
+ * @param start_from Keycode to start searching from.
+ *
+ * @return True if found, False otherwise.
+ */
 Bool
 FindNamedKey(XkbDescPtr xkb,
              unsigned long name,
@@ -495,6 +519,7 @@ FindNamedKey(XkbDescPtr xkb,
                 return False;
             }
         }
+        /* Find first unused keycode and store our key here */
         for (n = xkb->min_key_code; n <= xkb->max_key_code; n++)
         {
             if (xkb->names->keys[n].name[0] == '\0')
