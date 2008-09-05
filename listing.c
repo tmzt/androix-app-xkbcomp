@@ -84,15 +84,15 @@ SOFTWARE.
 #define	DEBUG_VAR listingDebug
 #include "xkbcomp.h"
 #include <stdlib.h>
-#ifndef X_NOT_POSIX
+
 #ifdef _POSIX_SOURCE
-#include <limits.h>
+# include <limits.h>
 #else
-#define _POSIX_SOURCE
-#include <limits.h>
-#undef _POSIX_SOURCE
+# define _POSIX_SOURCE
+# include <limits.h>
+# undef _POSIX_SOURCE
 #endif
-#endif
+
 #ifndef PATH_MAX
 #ifdef WIN32
 #define PATH_MAX 512
@@ -109,28 +109,13 @@ SOFTWARE.
 #endif
 
 #ifdef WIN32
-#include <windows.h>
-#define FileName(file) file.cFileName
-#undef TEXT
-#undef ALTERNATE
+# include <windows.h>
+# define FileName(file) file.cFileName
+# undef TEXT
+# undef ALTERNATE
 #else
-#define FileName(file) file->d_name
-#ifndef X_NOT_POSIX
-#include <dirent.h>
-#else
-#ifdef SYSV
-#include <dirent.h>
-#else
-#ifdef USG
-#include <dirent.h>
-#else
-#include <sys/dir.h>
-#ifndef dirent
-#define dirent direct
-#endif
-#endif
-#endif
-#endif
+# include <dirent.h>
+# define FileName(file) file->d_name
 #endif
 
 #include "xkbpath.h"
