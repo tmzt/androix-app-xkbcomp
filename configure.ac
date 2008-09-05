@@ -31,6 +31,8 @@ AC_PROG_CC
 AC_PROG_YACC
 AC_PROG_INSTALL
 
+AC_CHECK_FUNCS([strdup strcasecmp])
+
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XKBCOMP, x11 xkbfile)
 AC_SUBST(XKBCOMP_CFLAGS)
