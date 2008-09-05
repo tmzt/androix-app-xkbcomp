@@ -782,7 +782,7 @@ parseArgs(int argc, char *argv[])
         int len;
         char *ch, *name, buf[128];
         if (inDpyName[0] == ':')
-            sprintf(name = buf, "server%s", inDpyName);
+            snprintf(name = buf, sizeof(buf), "server%s", inDpyName);
         else
             name = inDpyName;
 

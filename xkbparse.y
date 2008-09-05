@@ -727,8 +727,9 @@ KeySym		:	IDENT
 				$$= sym;
 			    else {
 				char buf[120];
-				sprintf(buf,"expected keysym, got %s",
-							uStringText(scanStr));
+				snprintf(buf, sizeof(buf),
+					 "expected keysym, got %s",
+					 uStringText(scanStr));
 				yyerror(buf);
 				yynerrs++;
 				$$= NoSymbol;

@@ -85,11 +85,12 @@ siText(SymInterpInfo * si, CompatInfo * info)
 
     if (si == &info->dflt)
     {
-        sprintf(buf, "default");
+        snprintf(buf, sizeof(buf), "default");
     }
     else
     {
-        sprintf(buf, "%s+%s(%s)", XkbKeysymText(si->interp.sym, XkbMessage),
+        snprintf(buf, sizeof(buf), "%s+%s(%s)", 
+		XkbKeysymText(si->interp.sym, XkbMessage),
                 XkbSIMatchText(si->interp.match, XkbMessage),
                 XkbModMaskText(si->interp.mods, XkbMessage));
     }

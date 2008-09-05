@@ -405,7 +405,7 @@ XkbFindFileInPath(char *name, unsigned type, char **pathRtrn)
             ACTION("Ignored\n");
             continue;
         }
-        sprintf(buf, "%s/%s/%s", includePath[i], typeDir, name);
+        snprintf(buf, sizeof(buf), "%s/%s/%s", includePath[i], typeDir, name);
         file = fopen(buf, "r");
         if (file != NULL)
             break;

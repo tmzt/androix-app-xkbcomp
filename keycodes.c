@@ -724,7 +724,7 @@ HandleIndicatorNameDef(IndicatorNameDef * def,
     if (!ExprResolveString(def->name, &tmp, NULL, NULL))
     {
         char buf[20];
-        sprintf(buf, "%d", def->ndx);
+        snprintf(buf, sizeof(buf), "%d", def->ndx);
         info->errorCount++;
         return ReportBadType("indicator", "name", buf, "string");
     }

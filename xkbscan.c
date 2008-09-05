@@ -64,205 +64,205 @@ tokText(int tok)
     switch (tok)
     {
     case END_OF_FILE:
-        sprintf(buf, "END_OF_FILE");
+        snprintf(buf, sizeof(buf), "END_OF_FILE");
         break;
     case ERROR_TOK:
-        sprintf(buf, "ERROR");
+        snprintf(buf, sizeof(buf), "ERROR");
         break;
 
     case XKB_KEYMAP:
-        sprintf(buf, "XKB_KEYMAP");
+        snprintf(buf, sizeof(buf), "XKB_KEYMAP");
         break;
     case XKB_KEYCODES:
-        sprintf(buf, "XKB_KEYCODES");
+        snprintf(buf, sizeof(buf), "XKB_KEYCODES");
         break;
     case XKB_TYPES:
-        sprintf(buf, "XKB_TYPES");
+        snprintf(buf, sizeof(buf), "XKB_TYPES");
         break;
     case XKB_SYMBOLS:
-        sprintf(buf, "XKB_SYMBOLS");
+        snprintf(buf, sizeof(buf), "XKB_SYMBOLS");
         break;
     case XKB_COMPATMAP:
-        sprintf(buf, "XKB_COMPATMAP");
+        snprintf(buf, sizeof(buf), "XKB_COMPATMAP");
         break;
     case XKB_GEOMETRY:
-        sprintf(buf, "XKB_GEOMETRY");
+        snprintf(buf, sizeof(buf), "XKB_GEOMETRY");
         break;
     case XKB_SEMANTICS:
-        sprintf(buf, "XKB_SEMANTICS");
+        snprintf(buf, sizeof(buf), "XKB_SEMANTICS");
         break;
     case XKB_LAYOUT:
-        sprintf(buf, "XKB_LAYOUT");
+        snprintf(buf, sizeof(buf), "XKB_LAYOUT");
         break;
 
     case INCLUDE:
-        sprintf(buf, "INCLUDE");
+        snprintf(buf, sizeof(buf), "INCLUDE");
         break;
     case OVERRIDE:
-        sprintf(buf, "OVERRIDE");
+        snprintf(buf, sizeof(buf), "OVERRIDE");
         break;
     case AUGMENT:
-        sprintf(buf, "AUGMENT");
+        snprintf(buf, sizeof(buf), "AUGMENT");
         break;
     case REPLACE:
-        sprintf(buf, "REPLACE");
+        snprintf(buf, sizeof(buf), "REPLACE");
         break;
     case ALTERNATE:
-        sprintf(buf, "ALTERNATE");
+        snprintf(buf, sizeof(buf), "ALTERNATE");
         break;
 
     case VIRTUAL_MODS:
-        sprintf(buf, "VIRTUAL_MODS");
+        snprintf(buf, sizeof(buf), "VIRTUAL_MODS");
         break;
     case TYPE:
-        sprintf(buf, "TYPE");
+        snprintf(buf, sizeof(buf), "TYPE");
         break;
     case INTERPRET:
-        sprintf(buf, "INTERPRET");
+        snprintf(buf, sizeof(buf), "INTERPRET");
         break;
     case ACTION_TOK:
-        sprintf(buf, "ACTION");
+        snprintf(buf, sizeof(buf), "ACTION");
         break;
     case KEY:
-        sprintf(buf, "KEY");
+        snprintf(buf, sizeof(buf), "KEY");
         break;
     case ALIAS:
-        sprintf(buf, "ALIAS");
+        snprintf(buf, sizeof(buf), "ALIAS");
         break;
     case GROUP:
-        sprintf(buf, "GROUP");
+        snprintf(buf, sizeof(buf), "GROUP");
         break;
     case MODIFIER_MAP:
-        sprintf(buf, "MODIFIER_MAP");
+        snprintf(buf, sizeof(buf), "MODIFIER_MAP");
         break;
     case INDICATOR:
-        sprintf(buf, "INDICATOR");
+        snprintf(buf, sizeof(buf), "INDICATOR");
         break;
     case SHAPE:
-        sprintf(buf, "SHAPE");
+        snprintf(buf, sizeof(buf), "SHAPE");
         break;
     case KEYS:
-        sprintf(buf, "KEYS");
+        snprintf(buf, sizeof(buf), "KEYS");
         break;
     case ROW:
-        sprintf(buf, "ROW");
+        snprintf(buf, sizeof(buf), "ROW");
         break;
     case SECTION:
-        sprintf(buf, "SECTION");
+        snprintf(buf, sizeof(buf), "SECTION");
         break;
     case OVERLAY:
-        sprintf(buf, "OVERLAY");
+        snprintf(buf, sizeof(buf), "OVERLAY");
         break;
     case TEXT:
-        sprintf(buf, "TEXT");
+        snprintf(buf, sizeof(buf), "TEXT");
         break;
     case OUTLINE:
-        sprintf(buf, "OUTLINE");
+        snprintf(buf, sizeof(buf), "OUTLINE");
         break;
     case SOLID:
-        sprintf(buf, "SOLID");
+        snprintf(buf, sizeof(buf), "SOLID");
         break;
     case LOGO:
-        sprintf(buf, "LOGO");
+        snprintf(buf, sizeof(buf), "LOGO");
         break;
     case VIRTUAL:
-        sprintf(buf, "VIRTUAL");
+        snprintf(buf, sizeof(buf), "VIRTUAL");
         break;
 
     case EQUALS:
-        sprintf(buf, "EQUALS");
+        snprintf(buf, sizeof(buf), "EQUALS");
         break;
     case PLUS:
-        sprintf(buf, "PLUS");
+        snprintf(buf, sizeof(buf), "PLUS");
         break;
     case MINUS:
-        sprintf(buf, "MINUS");
+        snprintf(buf, sizeof(buf), "MINUS");
         break;
     case DIVIDE:
-        sprintf(buf, "DIVIDE");
+        snprintf(buf, sizeof(buf), "DIVIDE");
         break;
     case TIMES:
-        sprintf(buf, "TIMES");
+        snprintf(buf, sizeof(buf), "TIMES");
         break;
     case OBRACE:
-        sprintf(buf, "OBRACE");
+        snprintf(buf, sizeof(buf), "OBRACE");
         break;
     case CBRACE:
-        sprintf(buf, "CBRACE");
+        snprintf(buf, sizeof(buf), "CBRACE");
         break;
     case OPAREN:
-        sprintf(buf, "OPAREN");
+        snprintf(buf, sizeof(buf), "OPAREN");
         break;
     case CPAREN:
-        sprintf(buf, "CPAREN");
+        snprintf(buf, sizeof(buf), "CPAREN");
         break;
     case OBRACKET:
-        sprintf(buf, "OBRACKET");
+        snprintf(buf, sizeof(buf), "OBRACKET");
         break;
     case CBRACKET:
-        sprintf(buf, "CBRACKET");
+        snprintf(buf, sizeof(buf), "CBRACKET");
         break;
     case DOT:
-        sprintf(buf, "DOT");
+        snprintf(buf, sizeof(buf), "DOT");
         break;
     case COMMA:
-        sprintf(buf, "COMMA");
+        snprintf(buf, sizeof(buf), "COMMA");
         break;
     case SEMI:
-        sprintf(buf, "SEMI");
+        snprintf(buf, sizeof(buf), "SEMI");
         break;
     case EXCLAM:
-        sprintf(buf, "EXCLAM");
+        snprintf(buf, sizeof(buf), "EXCLAM");
         break;
     case INVERT:
-        sprintf(buf, "INVERT");
+        snprintf(buf, sizeof(buf), "INVERT");
         break;
 
     case STRING:
-        sprintf(buf, "STRING (%s)", scanStr);
+        snprintf(buf, sizeof(buf), "STRING (%s)", scanStr);
         break;
     case INTEGER:
-        sprintf(buf, "INTEGER (0x%x)", scanInt);
+        snprintf(buf, sizeof(buf), "INTEGER (0x%x)", scanInt);
         break;
     case FLOAT:
-        sprintf(buf, "FLOAT (%d.%d)",
+        snprintf(buf, sizeof(buf), "FLOAT (%d.%d)",
                 scanInt / XkbGeomPtsPerMM, scanInt % XkbGeomPtsPerMM);
         break;
     case IDENT:
-        sprintf(buf, "IDENT (%s)", scanStr);
+        snprintf(buf, sizeof(buf), "IDENT (%s)", scanStr);
         break;
     case KEYNAME:
-        sprintf(buf, "KEYNAME (%s)", scanStr);
+        snprintf(buf, sizeof(buf), "KEYNAME (%s)", scanStr);
         break;
 
     case PARTIAL:
-        sprintf(buf, "PARTIAL");
+        snprintf(buf, sizeof(buf), "PARTIAL");
         break;
     case DEFAULT:
-        sprintf(buf, "DEFAULT");
+        snprintf(buf, sizeof(buf), "DEFAULT");
         break;
     case HIDDEN:
-        sprintf(buf, "HIDDEN");
+        snprintf(buf, sizeof(buf), "HIDDEN");
         break;
 
     case ALPHANUMERIC_KEYS:
-        sprintf(buf, "ALPHANUMERIC_KEYS");
+        snprintf(buf, sizeof(buf), "ALPHANUMERIC_KEYS");
         break;
     case MODIFIER_KEYS:
-        sprintf(buf, "MODIFIER_KEYS");
+        snprintf(buf, sizeof(buf), "MODIFIER_KEYS");
         break;
     case KEYPAD_KEYS:
-        sprintf(buf, "KEYPAD_KEYS");
+        snprintf(buf, sizeof(buf), "KEYPAD_KEYS");
         break;
     case FUNCTION_KEYS:
-        sprintf(buf, "FUNCTION_KEYS");
+        snprintf(buf, sizeof(buf), "FUNCTION_KEYS");
         break;
     case ALTERNATE_GROUP:
-        sprintf(buf, "ALTERNATE_GROUP");
+        snprintf(buf, sizeof(buf), "ALTERNATE_GROUP");
         break;
 
     default:
-        sprintf(buf, "UNKNOWN");
+        snprintf(buf, sizeof(buf), "UNKNOWN");
         break;
     }
     return buf;

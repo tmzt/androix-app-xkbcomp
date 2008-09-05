@@ -88,7 +88,7 @@ exprOpText(unsigned type)
         strcpy(buf, "plus sign");
         break;
     default:
-        sprintf(buf, "illegal(%d)", type);
+        snprintf(buf, sizeof(buf), "illegal(%d)", type);
         break;
     }
     return buf;
@@ -120,7 +120,7 @@ exprTypeText(unsigned type)
         strcpy(buf, "keyname");
         break;
     default:
-        sprintf(buf, "illegal(%d)", type);
+        snprintf(buf, sizeof(buf), "illegal(%d)", type);
         break;
     }
     return buf;
