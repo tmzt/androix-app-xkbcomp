@@ -70,16 +70,6 @@ typedef int Comparison;
 #define	comparisonText(c)	((c)?((c)<0?"Less":"Greater"):"Equal")
 #endif
 
-#if 0
-typedef union
-{
-    int i;
-    unsigned u;
-    void *p;
-    void *(*fp) ();
-} Union;
-#endif
-
 /***====================================================================***/
 
 extern Opaque uAlloc(unsigned   /* size */
