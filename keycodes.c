@@ -500,7 +500,7 @@ HandleIncludeKeycodes(IncludeStmt * stmt, XkbDescPtr xkb, KeyNamesInfo * info)
 {
     unsigned newMerge;
     XkbFile *rtrn;
-    KeyNamesInfo included = {0};
+    KeyNamesInfo included = {NULL};
     Bool haveSelf;
 
     haveSelf = False;

@@ -39,7 +39,7 @@
 #define	SYMBOLS		4
 #define	MAX_SECTIONS	5
 
-XkbFile *sections[MAX_SECTIONS];
+static XkbFile *sections[MAX_SECTIONS];
 
 /**
  * Compile the given file and store the output in result.

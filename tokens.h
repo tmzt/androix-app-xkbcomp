@@ -96,4 +96,9 @@
 #define	FUNCTION_KEYS		76
 #define	ALTERNATE_GROUP		77
 
+extern Atom tok_ONE_LEVEL;
+extern Atom tok_TWO_LEVEL;
+extern Atom tok_ALPHABETIC;
+extern Atom tok_KEYPAD;
+
 #endif

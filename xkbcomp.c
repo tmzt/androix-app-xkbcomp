@@ -38,7 +38,6 @@
 #include <malloc.h>
 #endif
 
-#define	DEBUG_VAR_NOT_LOCAL
 #define	DEBUG_VAR debugFlags
 #include "xkbcomp.h"
 #include <stdlib.h>
@@ -73,6 +72,8 @@
 #define	INPUT_UNKNOWN	0
 #define	INPUT_XKB	1
 #define	INPUT_XKM	2
+
+unsigned int debugFlags;
 
 static const char *fileTypeExt[] = {
     "XXX",
@@ -633,10 +634,10 @@ parseArgs(int argc, char *argv[])
         inputFormat = INPUT_XKB;
     }
 #ifndef WIN32
-    else if (strchr(inputFile, ':') == 0)
+    else if (strchr(inputFile, ':') == NULL)
     {
 #else
-    else if ((strchr(inputFile, ':') == 0) || (strlen(inputFile) > 2 &&
+    else if ((strchr(inputFile, ':') == NULL) || (strlen(inputFile) > 2 &&
                                                isalpha(inputFile[0]) &&
                                                inputFile[1] == ':'
                                                && strchr(inputFile + 2,
@@ -648,7 +649,7 @@ parseArgs(int argc, char *argv[])
         if (inputFile[len - 1] == ')')
         {
             char *tmp;
-            if ((tmp = strchr(inputFile, '(')) != 0)
+            if ((tmp = strchr(inputFile, '(')) != NULL)
             {
                 *tmp = '\0';
                 inputFile[len - 1] = '\0';

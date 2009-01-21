@@ -22,3 +22,6 @@ xkbparse.h
 *~
 *.o
 ylwrap
+xkbcomp-*.tar.*
+ChangeLog
+tags

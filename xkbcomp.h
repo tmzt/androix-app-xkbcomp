@@ -28,7 +28,6 @@
 #define	XKBCOMP_H 1
 
 #ifndef DEBUG_VAR
-#define	DEBUG_VAR_NOT_LOCAL
 #define	DEBUG_VAR debugFlags
 #endif
 

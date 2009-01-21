@@ -1001,7 +1001,7 @@ HandleKeyTypeDef(KeyTypeDef * def,
     type.defs.defined = 0;
     type.defs.fileID = info->fileID;
     type.defs.merge = merge;
-    type.defs.next = 0;
+    type.defs.next = NULL;
     type.dpy = info->dpy;
     type.name = def->name;
     type.mask = info->dflt.mask;
@@ -1221,7 +1221,7 @@ CompileKeyTypes(XkbFile * file, XkbFileInfo * result, unsigned merge)
         register KeyTypeInfo *def;
         register XkbKeyTypePtr type, next;
 
-        if (info.name != None)
+        if (info.name != NULL)
         {
             if (XkbAllocNames(xkb, XkbTypesNameMask, 0, 0) == Success)
                 xkb->names->types = XkbInternAtom(xkb->dpy, info.name, False);

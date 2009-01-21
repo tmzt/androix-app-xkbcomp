@@ -80,7 +80,6 @@ SOFTWARE.
 #include <malloc.h>
 #endif
 
-#define	DEBUG_VAR_NOT_LOCAL
 #define	DEBUG_VAR listingDebug
 #include "xkbcomp.h"
 #include <stdlib.h>
@@ -125,6 +124,8 @@ SOFTWARE.
 #include <X11/extensions/XKBgeom.h>
 
 #define	lowbit(x)	((x) & (-(x)))
+
+unsigned int listingDebug;
 
 static int szListing = 0;
 static int nListed = 0;

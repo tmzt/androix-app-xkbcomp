@@ -488,7 +488,7 @@ ExprResolveFloat(ExprDef * expr,
         {
             register char *str;
             str = XkbAtomGetString(NULL, expr->value.str);
-            if ((str != None) && (strlen(str) == 1))
+            if ((str != NULL) && (strlen(str) == 1))
             {
                 val_rtrn->uval = str[0] * XkbGeomPtsPerMM;
                 return True;
@@ -601,7 +601,7 @@ ExprResolveInteger(ExprDef * expr,
         {
             register char *str;
             str = XkbAtomGetString(NULL, expr->value.str);
-            if (str != None)
+            if (str != NULL)
                 switch (strlen(str))
                 {
                 case 0:

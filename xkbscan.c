@@ -35,6 +35,8 @@
 #include "utils.h"
 #include "parseutils.h"
 
+unsigned int scanDebug;
+
 FILE *yyin = NULL;
 
 static char scanFileBuf[1024] = {0};
@@ -42,20 +44,15 @@ char *scanFile = scanFileBuf;
 int lineNum = 0;
 
 int scanInt;
-char *scanIntStr;
-int scanIntClass;
 
 char *scanStr = NULL;
-int scanStrLine = 0;
+static int scanStrLine = 0;
 
 #define	BUFSIZE	512
 static int nInBuf = 0;
 static char buf[BUFSIZE];
 
 #ifdef DEBUG
-
-extern unsigned debugFlags;
-
 static char *
 tokText(int tok)
 {
@@ -446,7 +443,7 @@ yyGetKeyName(void)
     return ERROR_TOK;
 }
 
-struct _Keyword
+static struct _Keyword
 {
     const char *keyword;
     int token;
@@ -543,7 +540,7 @@ struct _Keyword
     {
     "alternate_group", ALTERNATE_GROUP}
 };
-int numKeywords = sizeof(keywords) / sizeof(struct _Keyword);
+static int numKeywords = sizeof(keywords) / sizeof(struct _Keyword);
 
 static int
 yyGetIdent(int first)

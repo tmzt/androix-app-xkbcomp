@@ -32,6 +32,7 @@
 #include "misc.h"
 #include "indicators.h"
 #include "action.h"
+#include "compat.h"
 
 typedef struct _SymInterpInfo
 {

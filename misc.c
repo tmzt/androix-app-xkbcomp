@@ -267,7 +267,7 @@ typedef struct _KeyNameDesc
     Bool used;
 } KeyNameDesc;
 
-KeyNameDesc dfltKeys[] = {
+static KeyNameDesc dfltKeys[] = {
     {XK_Escape, NoSymbol, "ESC\0"},
     {XK_quoteleft, XK_asciitilde, "TLDE"},
     {XK_1, XK_exclam, "AE01"},

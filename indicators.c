@@ -152,7 +152,7 @@ AddIndicatorMap(LEDInfo * oldLEDs, LEDInfo * new)
         WSGO("Couldn't allocate indicator map\n");
         ACTION1("Map for indicator %s not compiled\n",
                 XkbAtomText(NULL, new->name, XkbMessage));
-        return False;
+        return NULL;
     }
     *old = *new;
     old->defs.next = NULL;
@@ -164,7 +164,7 @@ AddIndicatorMap(LEDInfo * oldLEDs, LEDInfo * new)
     return old;
 }
 
-LookupEntry modComponentNames[] = {
+static LookupEntry modComponentNames[] = {
     {"base", XkbIM_UseBase}
     ,
     {"latched", XkbIM_UseLatched}
@@ -181,7 +181,7 @@ LookupEntry modComponentNames[] = {
     ,
     {NULL, 0}
 };
-LookupEntry groupComponentNames[] = {
+static LookupEntry groupComponentNames[] = {
     {"base", XkbIM_UseBase}
     ,
     {"latched", XkbIM_UseLatched}
