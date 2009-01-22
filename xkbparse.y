@@ -98,7 +98,7 @@
 #include <X11/extensions/XKBgeom.h>
 #include <stdlib.h>
 
-static unsigned int parseDebug;
+unsigned int parseDebug;
 
 %}
 %right	EQUALS
