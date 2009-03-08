@@ -45,6 +45,13 @@ XKBCOMP_CFLAGS="$CWARNFLAGS $XKBCOMP_CFLAGS"
 AC_SUBST(XKBCOMP_CFLAGS)
 AC_SUBST(XKBCOMP_LIBS)
 
+AC_ARG_WITH([xkb_config_root],
+    [AC_HELP_STRING([--with-xkb-config-root=<paths>],
+        [Set default XKB config root (default: ${datadir}/X11/xkb)])],
+    [XKBCONFIGROOT="$withval"],
+    [XKBCONFIGROOT='${datadir}/X11/xkb'])
+AC_SUBST([XKBCONFIGROOT])
+
 XORG_MANPAGE_SECTIONS
 XORG_RELEASE_VERSION
 XORG_CHANGELOG
