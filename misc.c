@@ -383,6 +383,7 @@ ComputeKbdDefaults(XkbDescPtr xkb)
     register int i, tmp, nUnknown;
     KeyNameDesc *name;
     KeySym *syms;
+    char tmpname[XkbKeyNameLength + 1];
 
     if ((xkb->names == NULL) || (xkb->names->keys == NULL))
     {
@@ -430,8 +431,10 @@ ComputeKbdDefaults(XkbDescPtr xkb)
                             ACTION2("Using <U%03d> for key %d\n",
                                     nUnknown, i);
                         }
-                        sprintf(xkb->names->keys[i].name, "U%03d",
-                                nUnknown++);
+                        snprintf(tmpname, sizeof(tmpname), "U%03d",
+                                 nUnknown++);
+                        memcpy(xkb->names->keys[i].name, tmpname,
+                               XkbKeyNameLength);
                     }
                     break;
                 }
@@ -442,7 +445,9 @@ ComputeKbdDefaults(XkbDescPtr xkb)
                 {
                     WARN1("Key %d does not match any defaults\n", i);
                     ACTION1("Using name <U%03d>\n", nUnknown);
-                    sprintf(xkb->names->keys[i].name, "U%03d", nUnknown++);
+                    snprintf(tmpname, sizeof(tmpname), "U%03d", nUnknown++);
+                    memcpy(xkb->names->keys[i].name, tmpname,
+                           XkbKeyNameLength);
                 }
             }
         }
