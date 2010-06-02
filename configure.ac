@@ -35,6 +35,8 @@ AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CC
 AC_PROG_YACC
+AC_PATH_PROG([YACC_INST], $YACC)
+test -z "$YACC_INST" && AC_MSG_ERROR([yacc not found - unable to compile xkbparse.y])
 AC_PROG_INSTALL
 
 
