@@ -136,9 +136,9 @@ unsigned int parseDebug;
 	XkbFile		*file;
 }
 %type <ival>	Number Integer Float SignedNumber
-%type <uval>	XkbCompositeType FileType MergeMode OptMergeMode KeySym
+%type <uval>	XkbCompositeType FileType MergeMode OptMergeMode
 %type <uval>	DoodadType Flag Flags OptFlags
-%type <str>	KeyName MapName OptMapName
+%type <str>	KeyName MapName OptMapName KeySym
 %type <sval>	FieldSpec Ident Element String 
 %type <any>	DeclList Decl 
 %type <expr>	OptExprList ExprList Expr Term Lhs Terminal ArrayInit
@@ -374,9 +374,9 @@ InterpretDecl	:	INTERPRET InterpretMatch OBRACE
 		;
 
 InterpretMatch	:	KeySym PLUS Expr	
-			{ $$= InterpCreate((KeySym)$1,$3); }
+			{ $$= InterpCreate(XStringToKeysym($1), $3); }
 		|	KeySym			
-			{ $$= InterpCreate((KeySym)$1,NULL); }
+			{ $$= InterpCreate(XStringToKeysym($1), NULL); }
 		;
 
 VarDeclList	:	VarDeclList VarDecl
@@ -716,34 +716,17 @@ OptKeySymList	:	KeySymList			{ $$= $1; }
 		;
 
 KeySymList	:	KeySymList COMMA KeySym
-			{ $$= AppendKeysymList($1,(KeySym)$3); }
+			{ $$= AppendKeysymList($1,$3); }
 		|	KeySym
-			{ $$= CreateKeysymList((KeySym)$1); }
+			{ $$= CreateKeysymList($1); }
 		;
 
-KeySym		:	IDENT
-			{ 
-			    KeySym sym;
-			    if (LookupKeysym(scanStr,&sym))
-				$$= sym;
-			    else {
-				char buf[120];
-				snprintf(buf, sizeof(buf),
-					 "expected keysym, got %s",
-					 uStringText(scanStr));
-				yyerror(buf);
-				yynerrs++;
-				$$= NoSymbol;
-			    }
-			}
-		|	SECTION
-			{
-			    $$= XK_section;
-			}
+KeySym		:	IDENT           { $$= scanStr; scanStr= NULL; }
+		|	SECTION         { $$= strdup("section"); }
 		|	Integer		
 			{
-			    if ($1<10)	$$= $1+'0';	/* XK_0 .. XK_9 */
-			    else	$$= $1;
+			    if ($1<10)	{ $$= malloc(2); $$[0]= '0' + $1; $$[1]= '\0'; }
+			    else	{ $$= malloc(17); snprintf($$, 17, "%x", $1); }
 			}
 		;
 
