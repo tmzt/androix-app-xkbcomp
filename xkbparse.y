@@ -726,7 +726,7 @@ KeySym		:	IDENT           { $$= strdup(scanBuf); }
 		|	Integer		
 			{
 			    if ($1<10)	{ $$= malloc(2); $$[0]= '0' + $1; $$[1]= '\0'; }
-			    else	{ $$= malloc(17); snprintf($$, 17, "%x", $1); }
+			    else	{ $$= malloc(19); snprintf($$, 19, "0x%x", $1); }
 			}
 		;
 

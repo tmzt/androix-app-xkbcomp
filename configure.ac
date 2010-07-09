@@ -41,6 +41,7 @@ AC_PROG_INSTALL
 
 
 AC_CHECK_FUNCS([strdup strcasecmp])
+AC_CHECK_HEADERS([limits.h])
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XKBCOMP, x11 xkbfile)

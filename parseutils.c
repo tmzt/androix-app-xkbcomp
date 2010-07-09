@@ -30,6 +30,10 @@
 #include <X11/keysym.h>
 #include <X11/extensions/XKBgeom.h>
 #include <X11/Xalloca.h>
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
+#endif
+#include <stdlib.h>
 
 XkbFile *rtrnValue;
 
@@ -623,6 +627,7 @@ int
 LookupKeysym(char *str, KeySym * sym_rtrn)
 {
     KeySym sym;
+    char *tmp;
 
     if ((!str) || (uStrCaseCmp(str, "any") == 0)
         || (uStrCaseCmp(str, "nosymbol") == 0))
@@ -641,6 +646,13 @@ LookupKeysym(char *str, KeySym * sym_rtrn)
     {
         *sym_rtrn = sym;
         return 1;
+    }
+    if (strlen(str) > 2 && str[0] == '0' && str[1] == 'x') {
+        sym = strtoul(str, &tmp, 16);
+        if (sym != ULONG_MAX && (!tmp || *tmp == '\0')) {
+            *sym_rtrn = sym;
+            return 1;
+        }
     }
     return 0;
 }
