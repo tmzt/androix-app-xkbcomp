@@ -269,7 +269,7 @@ tokText(int tok)
 }
 #endif
 
-static char
+static int
 scanchar(void)
 {
     if (readBufPos >= readBufLen) {
@@ -285,7 +285,7 @@ scanchar(void)
 }
 
 static void
-unscanchar(char c)
+unscanchar(int c)
 {
     if (readBuf[--readBufPos] != c) {
         fprintf(stderr, "UNGETCHAR FAILED! Put back %c, was expecting %c at "
