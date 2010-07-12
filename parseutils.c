@@ -30,9 +30,7 @@
 #include <X11/keysym.h>
 #include <X11/extensions/XKBgeom.h>
 #include <X11/Xalloca.h>
-#ifdef HAVE_LIMITS_H
 #include <limits.h>
-#endif
 #include <stdlib.h>
 
 XkbFile *rtrnValue;
